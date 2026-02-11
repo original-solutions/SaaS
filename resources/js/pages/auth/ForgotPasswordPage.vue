@@ -6,16 +6,16 @@
             We've emailed you a password reset link.
         </div>
 
-        <form v-else @submit.prevent="handleSubmit" class="space-y-4">
+        <form v-else class="space-y-4" @submit.prevent="handleSubmit">
             <p class="text-sm text-gray-600">Enter your email and we'll send you a reset link.</p>
 
             <BaseInput
+                id="email"
                 v-model="email"
                 label="Email"
                 type="email"
                 placeholder="you@example.com"
                 :error="error"
-                id="email"
             />
 
             <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">

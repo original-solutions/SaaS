@@ -37,18 +37,20 @@
                                 'h-2 w-2 rounded-full',
                                 !notification.read_at ? 'bg-blue-500' : 'bg-transparent',
                             ]"
-                        ></div>
+                        />
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm text-gray-800">{{ notificationMessage(notification) }}</p>
+                        <p class="text-sm text-gray-800">
+                            {{ notificationMessage(notification) }}
+                        </p>
                         <p class="text-xs text-gray-400 mt-1">
                             {{ formatRelative(notification.created_at) }}
                         </p>
                     </div>
                     <button
                         v-if="!notification.read_at"
-                        @click="markRead(notification.id)"
                         class="flex-shrink-0 text-xs text-gray-500 hover:text-gray-700"
+                        @click="markRead(notification.id)"
                     >
                         Mark read
                     </button>
@@ -65,15 +67,15 @@
                 <div class="flex gap-2">
                     <button
                         :disabled="pagination.currentPage <= 1"
-                        @click="loadNotifications(pagination.currentPage - 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadNotifications(pagination.currentPage - 1)"
                     >
                         Previous
                     </button>
                     <button
                         :disabled="pagination.currentPage >= pagination.lastPage"
-                        @click="loadNotifications(pagination.currentPage + 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadNotifications(pagination.currentPage + 1)"
                     >
                         Next
                     </button>

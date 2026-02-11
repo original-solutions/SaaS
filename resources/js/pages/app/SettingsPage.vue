@@ -6,18 +6,18 @@
             <!-- Profile -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Profile</h2>
-                <form @submit.prevent="updateProfile" class="space-y-4 max-w-md">
+                <form class="space-y-4 max-w-md" @submit.prevent="updateProfile">
                     <BaseInput
+                        id="name"
                         v-model="profile.name"
                         label="Name"
-                        id="name"
                         :error="profileErrors.name"
                     />
                     <BaseInput
+                        id="profile-email"
                         v-model="profile.email"
                         label="Email"
                         type="email"
-                        id="profile-email"
                         disabled
                     />
                     <BaseButton type="submit" variant="primary" :loading="profileLoading" size="sm">
@@ -29,26 +29,26 @@
             <!-- Change Password -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h2>
-                <form @submit.prevent="changePassword" class="space-y-4 max-w-md">
+                <form class="space-y-4 max-w-md" @submit.prevent="changePassword">
                     <BaseInput
+                        id="current-password"
                         v-model="passwords.current_password"
                         label="Current Password"
                         type="password"
-                        id="current-password"
                         :error="passwordErrors.current_password"
                     />
                     <BaseInput
+                        id="new-password"
                         v-model="passwords.password"
                         label="New Password"
                         type="password"
-                        id="new-password"
                         :error="passwordErrors.password"
                     />
                     <BaseInput
+                        id="confirm-password"
                         v-model="passwords.password_confirmation"
                         label="Confirm Password"
                         type="password"
-                        id="confirm-password"
                     />
                     <p v-if="passwordSuccess" class="text-sm text-green-600">
                         Password updated successfully.
@@ -67,19 +67,19 @@
             <!-- Change Email -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Change Email</h2>
-                <form @submit.prevent="changeEmail" class="space-y-4 max-w-md">
+                <form class="space-y-4 max-w-md" @submit.prevent="changeEmail">
                     <BaseInput
+                        id="new-email"
                         v-model="emailForm.email"
                         label="New Email"
                         type="email"
-                        id="new-email"
                         :error="emailErrors.email"
                     />
                     <BaseInput
+                        id="email-password"
                         v-model="emailForm.password"
                         label="Current Password"
                         type="password"
-                        id="email-password"
                         :error="emailErrors.password"
                     />
                     <p v-if="emailSuccess" class="text-sm text-green-600">
@@ -136,8 +136,8 @@
                     <BaseButton
                         variant="secondary"
                         size="sm"
-                        @click="exportData"
                         :loading="exportLoading"
+                        @click="exportData"
                     >
                         Export My Data
                     </BaseButton>
@@ -156,10 +156,10 @@
                     </p>
                     <div class="flex gap-2 items-end max-w-sm">
                         <BaseInput
+                            id="delete-password"
                             v-model="deletePassword"
                             type="password"
                             placeholder="Password"
-                            id="delete-password"
                         />
                         <BaseButton
                             variant="danger"
@@ -173,7 +173,9 @@
                             Cancel
                         </BaseButton>
                     </div>
-                    <p v-if="deleteError" class="mt-2 text-sm text-red-600">{{ deleteError }}</p>
+                    <p v-if="deleteError" class="mt-2 text-sm text-red-600">
+                        {{ deleteError }}
+                    </p>
                 </div>
             </div>
         </div>

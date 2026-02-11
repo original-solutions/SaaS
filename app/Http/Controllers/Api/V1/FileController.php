@@ -55,6 +55,7 @@ class FileController extends Controller
         // If using local disk, stream the file
         if ($file->disk === 'local') {
             $fullPath = \Storage::disk('local')->path($file->path);
+
             return response()->download($fullPath, $file->original_name);
         }
 
@@ -65,11 +66,12 @@ class FileController extends Controller
     public function destroy(File $file)
     {
         // Only uploader or admin can delete (add FilePolicy for real app)
-        if (auth()->id() !== $file->uploaded_by_user_id && !auth()->user()->hasRole(['owner', 'admin'])) {
+        if (auth()->id() !== $file->uploaded_by_user_id && ! auth()->user()->hasRole(['owner', 'admin'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
         $this->fileService->delete($file);
+
         return response()->noContent();
     }
 

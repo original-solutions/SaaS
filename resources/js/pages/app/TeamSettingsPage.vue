@@ -28,19 +28,23 @@
                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                             Role
                         </th>
-                        <th v-if="tenantStore.isOwner" class="px-4 py-2"></th>
+                        <th v-if="tenantStore.isOwner" class="px-4 py-2" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <tr v-for="m in members" :key="m.id">
-                        <td class="px-4 py-3 text-sm text-gray-900">{{ m.name }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-500">{{ m.email }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">
+                            {{ m.name }}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-500">
+                            {{ m.email }}
+                        </td>
                         <td class="px-4 py-3">
                             <select
                                 v-if="tenantStore.isOwner && m.id !== authStore.user?.id"
                                 v-model="m.role"
-                                @change="updateRole(m)"
                                 class="text-xs border-gray-300 rounded-md"
+                                @change="updateRole(m)"
                             >
                                 <option value="owner">Owner</option>
                                 <option value="member">Member</option>
@@ -51,8 +55,8 @@
                         <td v-if="tenantStore.isOwner" class="px-4 py-3 text-right">
                             <button
                                 v-if="m.id !== authStore.user?.id"
-                                @click="removeMember(m)"
                                 class="text-xs text-red-600 hover:text-red-700"
+                                @click="removeMember(m)"
                             >
                                 Remove
                             </button>
@@ -68,7 +72,7 @@
             class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
         >
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Invite Member</h2>
-            <form @submit.prevent="sendInvite" class="flex flex-wrap items-end gap-3">
+            <form class="flex flex-wrap items-end gap-3" @submit.prevent="sendInvite">
                 <div class="flex-1 min-w-[200px]">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input
@@ -110,21 +114,23 @@
                 class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
             >
                 <div>
-                    <p class="text-sm text-gray-900">{{ inv.email }}</p>
+                    <p class="text-sm text-gray-900">
+                        {{ inv.email }}
+                    </p>
                     <p class="text-xs text-gray-500">
                         {{ inv.role }} &middot; expires {{ formatDate(inv.expires_at) }}
                     </p>
                 </div>
                 <div class="flex gap-2">
                     <button
-                        @click="resendInvite(inv)"
                         class="text-xs text-indigo-600 hover:text-indigo-700"
+                        @click="resendInvite(inv)"
                     >
                         Resend
                     </button>
                     <button
-                        @click="cancelInvite(inv)"
                         class="text-xs text-red-600 hover:text-red-700"
+                        @click="cancelInvite(inv)"
                     >
                         Cancel
                     </button>

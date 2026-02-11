@@ -2,31 +2,33 @@
     <GuestLayout>
         <h2 class="text-lg font-semibold text-gray-900 mb-6">Reset password</h2>
 
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form class="space-y-4" @submit.prevent="handleSubmit">
             <BaseInput
+                id="email"
                 v-model="form.email"
                 label="Email"
                 type="email"
                 :error="errors.email"
-                id="email"
             />
 
             <BaseInput
+                id="password"
                 v-model="form.password"
                 label="New password"
                 type="password"
                 :error="errors.password"
-                id="password"
             />
 
             <BaseInput
+                id="password_confirmation"
                 v-model="form.password_confirmation"
                 label="Confirm password"
                 type="password"
-                id="password_confirmation"
             />
 
-            <p v-if="errors.general" class="text-sm text-red-600">{{ errors.general }}</p>
+            <p v-if="errors.general" class="text-sm text-red-600">
+                {{ errors.general }}
+            </p>
 
             <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">
                 Reset password

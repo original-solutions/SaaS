@@ -52,20 +52,20 @@
             v-if="showSaveView"
             class="mb-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
         >
-            <form @submit.prevent="saveView" class="flex items-end gap-3">
+            <form class="flex items-end gap-3" @submit.prevent="saveView">
                 <BaseInput
+                    id="view-name"
                     v-model="newViewName"
                     label="View Name"
                     placeholder="e.g. Active VIPs"
-                    id="view-name"
                     class="flex-1 max-w-xs"
                 />
-                <BaseButton type="submit" variant="primary" size="sm" :loading="savingView"
-                    >Save</BaseButton
-                >
-                <BaseButton variant="ghost" size="sm" @click="showSaveView = false"
-                    >Cancel</BaseButton
-                >
+                <BaseButton type="submit" variant="primary" size="sm" :loading="savingView">
+                    Save
+                </BaseButton>
+                <BaseButton variant="ghost" size="sm" @click="showSaveView = false">
+                    Cancel
+                </BaseButton>
             </form>
         </div>
 
@@ -104,8 +104,8 @@
 
             <button
                 class="p-2 rounded-md border border-gray-300 text-gray-500 hover:text-gray-700 text-sm"
-                @click="toggleSortDir"
                 :title="sortDir === 'asc' ? 'Ascending' : 'Descending'"
+                @click="toggleSortDir"
             >
                 {{ sortDir === 'asc' ? '↑' : '↓' }}
             </button>
@@ -154,7 +154,7 @@
                                 sortDir === 'asc' ? '↑' : '↓'
                             }}</span>
                         </th>
-                        <th class="px-6 py-3"></th>
+                        <th class="px-6 py-3" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -170,13 +170,13 @@
                     </tr>
                     <tr v-for="customer in customers" :key="customer.id" class="hover:bg-gray-50">
                         <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                            <router-link
-                                :to="`/customers/${customer.id}`"
-                                class="hover:underline"
-                                >{{ customer.name }}</router-link
-                            >
+                            <router-link :to="`/customers/${customer.id}`" class="hover:underline">
+                                {{ customer.name }}
+                            </router-link>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ customer.email ?? '—' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ customer.email ?? '—' }}
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {{ customer.company ?? '—' }}
                         </td>
@@ -200,8 +200,9 @@
                                 v-if="tenantStore.canWrite"
                                 :to="`/customers/${customer.id}/edit`"
                                 class="text-sm text-gray-600 hover:text-gray-900"
-                                >Edit</router-link
                             >
+                                Edit
+                            </router-link>
                         </td>
                     </tr>
                 </tbody>
@@ -216,15 +217,15 @@
             <div class="flex gap-2">
                 <button
                     :disabled="pagination.currentPage <= 1"
-                    @click="fetchCustomers(pagination.currentPage - 1)"
                     class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                    @click="fetchCustomers(pagination.currentPage - 1)"
                 >
                     Previous
                 </button>
                 <button
                     :disabled="pagination.currentPage >= pagination.lastPage"
-                    @click="fetchCustomers(pagination.currentPage + 1)"
                     class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                    @click="fetchCustomers(pagination.currentPage + 1)"
                 >
                     Next
                 </button>

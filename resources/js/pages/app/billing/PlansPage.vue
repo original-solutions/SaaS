@@ -25,8 +25,12 @@
                     plan.is_active ? 'border-indigo-200 ring-2 ring-indigo-100' : 'border-gray-200',
                 ]"
             >
-                <h3 class="text-lg font-semibold text-gray-900">{{ plan.name }}</h3>
-                <p class="text-sm text-gray-500 mt-1 mb-4">{{ planDescription(plan) }}</p>
+                <h3 class="text-lg font-semibold text-gray-900">
+                    {{ plan.name }}
+                </h3>
+                <p class="text-sm text-gray-500 mt-1 mb-4">
+                    {{ planDescription(plan) }}
+                </p>
 
                 <!-- Features -->
                 <ul class="space-y-2 mb-6 flex-1">

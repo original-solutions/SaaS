@@ -18,7 +18,9 @@
             ]"
             @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         />
-        <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
+        <p v-if="error" class="mt-1 text-sm text-red-600">
+            {{ error }}
+        </p>
     </div>
 </template>
 
@@ -37,6 +39,10 @@ withDefaults(
         modelValue: '',
         type: 'text',
         disabled: false,
+        label: '',
+        placeholder: '',
+        error: '',
+        id: '',
     },
 );
 

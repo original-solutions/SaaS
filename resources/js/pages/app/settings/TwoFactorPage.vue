@@ -59,11 +59,11 @@
                     </p>
                     <div class="flex gap-2 items-end max-w-sm">
                         <BaseInput
+                            id="disable-code"
                             v-model="disableCode"
                             type="text"
                             inputmode="numeric"
                             placeholder="000000"
-                            id="disable-code"
                         />
                         <BaseButton
                             variant="danger"
@@ -73,11 +73,13 @@
                         >
                             Disable
                         </BaseButton>
-                        <BaseButton variant="ghost" size="sm" @click="showDisable = false"
-                            >Cancel</BaseButton
-                        >
+                        <BaseButton variant="ghost" size="sm" @click="showDisable = false">
+                            Cancel
+                        </BaseButton>
                     </div>
-                    <p v-if="disableError" class="mt-2 text-sm text-red-600">{{ disableError }}</p>
+                    <p v-if="disableError" class="mt-2 text-sm text-red-600">
+                        {{ disableError }}
+                    </p>
                 </div>
             </template>
 
@@ -94,9 +96,9 @@
                         {{ code }}
                     </div>
                 </div>
-                <BaseButton variant="secondary" size="sm" @click="showingRecovery = false"
-                    >Done</BaseButton
-                >
+                <BaseButton variant="secondary" size="sm" @click="showingRecovery = false">
+                    Done
+                </BaseButton>
             </template>
 
             <!-- Setup flow -->
@@ -126,8 +128,9 @@
                     }}</code>
                 </div>
 
-                <form @submit.prevent="confirmSetup" class="max-w-xs mx-auto space-y-4">
+                <form class="max-w-xs mx-auto space-y-4" @submit.prevent="confirmSetup">
                     <BaseInput
+                        id="confirm-code"
                         v-model="confirmCode"
                         label="Verification Code"
                         type="text"
@@ -135,7 +138,6 @@
                         autocomplete="one-time-code"
                         placeholder="000000"
                         :error="confirmError"
-                        id="confirm-code"
                     />
                     <BaseButton
                         type="submit"

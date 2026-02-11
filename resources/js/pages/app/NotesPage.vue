@@ -12,7 +12,9 @@
 
             <ul v-else class="divide-y divide-gray-200">
                 <li v-for="note in notes" :key="note.id" class="p-4">
-                    <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ note.body }}</p>
+                    <p class="text-sm text-gray-800 whitespace-pre-wrap">
+                        {{ note.body }}
+                    </p>
                     <div class="mt-2 flex items-center gap-3 text-xs text-gray-400">
                         <span>{{ formatDate(note.created_at) }}</span>
                         <span class="text-gray-300">|</span>
@@ -36,15 +38,15 @@
                 <div class="flex gap-2">
                     <button
                         :disabled="pagination.currentPage <= 1"
-                        @click="loadNotes(pagination.currentPage - 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadNotes(pagination.currentPage - 1)"
                     >
                         Previous
                     </button>
                     <button
                         :disabled="pagination.currentPage >= pagination.lastPage"
-                        @click="loadNotes(pagination.currentPage + 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadNotes(pagination.currentPage + 1)"
                     >
                         Next
                     </button>

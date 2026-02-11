@@ -4,9 +4,9 @@
 
         <div class="flex items-center gap-3 mb-6">
             <button
-                @click="checkHealth"
                 :disabled="isLoading"
                 class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-md disabled:opacity-50"
+                @click="checkHealth"
             >
                 {{ isLoading ? 'Checking...' : 'Run Health Check' }}
             </button>
@@ -31,9 +31,11 @@
                                   ? 'bg-yellow-400'
                                   : 'bg-red-400'
                         "
-                    ></div>
+                    />
                     <div>
-                        <p class="text-sm font-medium text-white">{{ check.name }}</p>
+                        <p class="text-sm font-medium text-white">
+                            {{ check.name }}
+                        </p>
                         <p v-if="check.message" class="text-xs text-gray-400">
                             {{ check.message }}
                         </p>

@@ -36,18 +36,18 @@
                 </div>
             </div>
 
-            <form @submit.prevent="createToken" class="flex items-end gap-3 max-w-md">
+            <form class="flex items-end gap-3 max-w-md" @submit.prevent="createToken">
                 <BaseInput
+                    id="token-name"
                     v-model="tokenName"
                     label="Token Name"
                     placeholder="e.g. CI/CD"
-                    id="token-name"
                     :error="tokenError"
                     class="flex-1"
                 />
-                <BaseButton type="submit" variant="primary" :loading="creating" size="sm"
-                    >Create</BaseButton
-                >
+                <BaseButton type="submit" variant="primary" :loading="creating" size="sm">
+                    Create
+                </BaseButton>
             </form>
         </div>
 
@@ -60,7 +60,7 @@
             <div v-if="isLoading" class="p-6 text-center">
                 <div
                     class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"
-                ></div>
+                />
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
@@ -70,12 +70,14 @@
                     class="p-4 flex items-center justify-between"
                 >
                     <div>
-                        <p class="text-sm font-medium text-gray-900">{{ token.name }}</p>
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ token.name }}
+                        </p>
                         <p class="text-xs text-gray-500">
                             Created {{ formatDate(token.created_at) }}
                             <template v-if="token.last_used_at">
-                                &middot; Last used {{ formatDate(token.last_used_at) }}</template
-                            >
+                                &middot; Last used {{ formatDate(token.last_used_at) }}
+                            </template>
                         </p>
                     </div>
                     <BaseButton

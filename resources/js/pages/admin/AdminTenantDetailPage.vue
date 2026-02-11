@@ -11,7 +11,9 @@
                     />
                 </svg>
             </router-link>
-            <h1 class="text-2xl font-bold text-white">{{ tenant?.name ?? 'Tenant' }}</h1>
+            <h1 class="text-2xl font-bold text-white">
+                {{ tenant?.name ?? 'Tenant' }}
+            </h1>
             <span
                 v-if="tenant"
                 :class="statusClass(tenant.status)"
@@ -31,19 +33,27 @@
                         <dl class="grid grid-cols-2 gap-4 text-sm">
                             <div>
                                 <dt class="text-gray-400">Name</dt>
-                                <dd class="text-white">{{ tenant.name }}</dd>
+                                <dd class="text-white">
+                                    {{ tenant.name }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-gray-400">Slug</dt>
-                                <dd class="text-white font-mono">{{ tenant.slug }}</dd>
+                                <dd class="text-white font-mono">
+                                    {{ tenant.slug }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-gray-400">Created</dt>
-                                <dd class="text-white">{{ formatDate(tenant.created_at) }}</dd>
+                                <dd class="text-white">
+                                    {{ formatDate(tenant.created_at) }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-gray-400">Plan</dt>
-                                <dd class="text-white">{{ tenant.plan ?? 'None' }}</dd>
+                                <dd class="text-white">
+                                    {{ tenant.plan ?? 'None' }}
+                                </dd>
                             </div>
                         </dl>
                     </div>
@@ -61,14 +71,19 @@
                                 class="flex items-center justify-between py-2"
                             >
                                 <div>
-                                    <p class="text-sm text-white">{{ member.name }}</p>
-                                    <p class="text-xs text-gray-400">{{ member.email }}</p>
+                                    <p class="text-sm text-white">
+                                        {{ member.name }}
+                                    </p>
+                                    <p class="text-xs text-gray-400">
+                                        {{ member.email }}
+                                    </p>
                                 </div>
                                 <router-link
                                     :to="`/admin/users/${member.id}`"
                                     class="text-xs text-indigo-400 hover:text-indigo-300"
-                                    >View</router-link
                                 >
+                                    View
+                                </router-link>
                             </li>
                         </ul>
                     </div>
@@ -81,7 +96,9 @@
                         <dl class="space-y-3 text-sm">
                             <div class="flex justify-between">
                                 <dt class="text-gray-400">Users</dt>
-                                <dd class="text-white font-bold">{{ tenant.users_count ?? 0 }}</dd>
+                                <dd class="text-white font-bold">
+                                    {{ tenant.users_count ?? 0 }}
+                                </dd>
                             </div>
                             <div class="flex justify-between">
                                 <dt class="text-gray-400">Customers</dt>
@@ -98,15 +115,15 @@
                         <div class="space-y-2">
                             <button
                                 v-if="tenant.disabled_at"
-                                @click="enableTenant"
                                 class="w-full px-3 py-2 text-sm text-green-400 border border-green-500/30 rounded-md hover:bg-green-500/10"
+                                @click="enableTenant"
                             >
                                 Enable
                             </button>
                             <button
                                 v-else
-                                @click="disableTenant"
                                 class="w-full px-3 py-2 text-sm text-red-400 border border-red-500/30 rounded-md hover:bg-red-500/10"
+                                @click="disableTenant"
                             >
                                 Disable
                             </button>

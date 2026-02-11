@@ -71,7 +71,9 @@
                         <td class="px-6 py-4 text-sm text-gray-300">
                             {{ log.causer?.name ?? 'System' }}
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-400">{{ log.description }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-400">
+                            {{ log.description }}
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -84,15 +86,15 @@
             <div class="flex gap-2">
                 <button
                     :disabled="pagination.currentPage <= 1"
-                    @click="fetchLogs(pagination.currentPage - 1)"
                     class="px-3 py-1 text-sm border border-gray-600 rounded-md text-gray-300 disabled:opacity-50"
+                    @click="fetchLogs(pagination.currentPage - 1)"
                 >
                     Previous
                 </button>
                 <button
                     :disabled="pagination.currentPage >= pagination.lastPage"
-                    @click="fetchLogs(pagination.currentPage + 1)"
                     class="px-3 py-1 text-sm border border-gray-600 rounded-md text-gray-300 disabled:opacity-50"
+                    @click="fetchLogs(pagination.currentPage + 1)"
                 >
                     Next
                 </button>

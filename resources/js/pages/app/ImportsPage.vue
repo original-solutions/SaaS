@@ -43,7 +43,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                             Started
                         </th>
-                        <th class="px-6 py-3"></th>
+                        <th class="px-6 py-3" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -69,7 +69,7 @@
                                     >({{ imp.failed_rows }} failed)</span
                                 >
                             </template>
-                            <template v-else>—</template>
+                            <template v-else> — </template>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {{ formatDate(imp.created_at) }}
@@ -77,8 +77,8 @@
                         <td class="px-6 py-4 text-right">
                             <button
                                 v-if="imp.status === 'failed'"
-                                @click="retryImport(imp.id)"
                                 class="text-sm text-indigo-600 hover:text-indigo-800"
+                                @click="retryImport(imp.id)"
                             >
                                 Retry
                             </button>
@@ -97,15 +97,15 @@
                 <div class="flex gap-2">
                     <button
                         :disabled="pagination.currentPage <= 1"
-                        @click="loadImports(pagination.currentPage - 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadImports(pagination.currentPage - 1)"
                     >
                         Previous
                     </button>
                     <button
                         :disabled="pagination.currentPage >= pagination.lastPage"
-                        @click="loadImports(pagination.currentPage + 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadImports(pagination.currentPage + 1)"
                     >
                         Next
                     </button>

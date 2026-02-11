@@ -27,10 +27,10 @@
                         <TenantSwitcher v-if="tenantStore.all.length > 1" />
 
                         <!-- User Menu -->
-                        <div class="relative" ref="menuRef">
+                        <div ref="menuRef" class="relative">
                             <button
-                                @click="showMenu = !showMenu"
                                 class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
+                                @click="showMenu = !showMenu"
                             >
                                 <span>{{ authStore.user?.name }}</span>
                                 <ChevronDown class="h-4 w-4" />
@@ -57,8 +57,8 @@
                                 </router-link>
                                 <hr class="my-1" />
                                 <button
-                                    @click="handleLogout"
                                     class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                                    @click="handleLogout"
                                 >
                                     Sign out
                                 </button>

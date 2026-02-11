@@ -33,7 +33,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                             Created
                         </th>
-                        <th class="px-6 py-3"></th>
+                        <th class="px-6 py-3" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
@@ -49,9 +49,9 @@
                     </tr>
                     <tr v-for="t in tenants" :key="t.id" class="hover:bg-gray-700/50">
                         <td class="px-6 py-4 text-sm font-medium text-white">
-                            <router-link :to="`/admin/tenants/${t.id}`" class="hover:underline">{{
-                                t.name
-                            }}</router-link>
+                            <router-link :to="`/admin/tenants/${t.id}`" class="hover:underline">
+                                {{ t.name }}
+                            </router-link>
                         </td>
                         <td class="px-6 py-4">
                             <span
@@ -60,7 +60,9 @@
                                 >{{ t.status }}</span
                             >
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-300">{{ t.users_count ?? '—' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            {{ t.users_count ?? '—' }}
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-300">
                             {{ t.customers_count ?? '—' }}
                         </td>
@@ -70,15 +72,15 @@
                         <td class="px-6 py-4 text-right space-x-2">
                             <button
                                 v-if="t.disabled_at"
-                                @click="enableTenant(t)"
                                 class="text-xs text-green-400 hover:text-green-300"
+                                @click="enableTenant(t)"
                             >
                                 Enable
                             </button>
                             <button
                                 v-else
-                                @click="disableTenant(t)"
                                 class="text-xs text-red-400 hover:text-red-300"
+                                @click="disableTenant(t)"
                             >
                                 Disable
                             </button>
@@ -96,15 +98,15 @@
             <div class="flex gap-2">
                 <button
                     :disabled="pagination.currentPage <= 1"
-                    @click="fetchTenants(pagination.currentPage - 1)"
                     class="px-3 py-1 text-sm border border-gray-600 rounded-md text-gray-300 disabled:opacity-50"
+                    @click="fetchTenants(pagination.currentPage - 1)"
                 >
                     Previous
                 </button>
                 <button
                     :disabled="pagination.currentPage >= pagination.lastPage"
-                    @click="fetchTenants(pagination.currentPage + 1)"
                     class="px-3 py-1 text-sm border border-gray-600 rounded-md text-gray-300 disabled:opacity-50"
+                    @click="fetchTenants(pagination.currentPage + 1)"
                 >
                     Next
                 </button>

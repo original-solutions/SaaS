@@ -40,13 +40,17 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                             Uploaded
                         </th>
-                        <th class="px-6 py-3"></th>
+                        <th class="px-6 py-3" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <tr v-for="file in files" :key="file.id" class="hover:bg-gray-50">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ file.name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ file.mime_type }}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                            {{ file.name }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ file.mime_type }}
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {{ formatFileSize(file.size) }}
                         </td>
@@ -55,15 +59,15 @@
                         </td>
                         <td class="px-6 py-4 text-right space-x-2">
                             <button
-                                @click="downloadFile(file.id)"
                                 class="text-sm text-indigo-600 hover:text-indigo-800"
+                                @click="downloadFile(file.id)"
                             >
                                 Download
                             </button>
                             <button
                                 v-if="tenantStore.canWrite"
-                                @click="deleteFile(file.id)"
                                 class="text-sm text-red-600 hover:text-red-800"
+                                @click="deleteFile(file.id)"
                             >
                                 Delete
                             </button>
@@ -82,15 +86,15 @@
                 <div class="flex gap-2">
                     <button
                         :disabled="pagination.currentPage <= 1"
-                        @click="loadFiles(pagination.currentPage - 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadFiles(pagination.currentPage - 1)"
                     >
                         Previous
                     </button>
                     <button
                         :disabled="pagination.currentPage >= pagination.lastPage"
-                        @click="loadFiles(pagination.currentPage + 1)"
                         class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                        @click="loadFiles(pagination.currentPage + 1)"
                     >
                         Next
                     </button>

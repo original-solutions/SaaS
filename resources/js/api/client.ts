@@ -1,35 +1,26 @@
-import axios, { type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import axios, {
+    type AxiosInstance,
+    type AxiosError,
+    type InternalAxiosRequestConfig,
+    type CreateAxiosDefaults,
+} from 'axios';
 import type { ApiError } from './types';
 
-const api: AxiosInstance = axios.create({
+const baseConfig: CreateAxiosDefaults = {
     baseURL: '/api/v1',
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
     },
-});
+};
 
-// Request interceptor: attach access token and tenant header
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
+const api: AxiosInstance = axios.create(baseConfig);
 
-    const tenantId = localStorage.getItem('current_tenant_id');
-    if (tenantId) {
-        config.headers['X-Tenant-ID'] = tenantId;
-    }
+type QueueResolve = (token: string | null) => void;
+type QueueReject = (error: unknown) => void;
 
-    return config;
-});
-
-// Response interceptor: handle 401 with token refresh
+let failedQueue: Array<{ resolve: QueueResolve; reject: QueueReject }> = [];
 let isRefreshing = false;
-let failedQueue: Array<{
-    resolve: (value: unknown) => void;
-    reject: (reason: unknown) => void;
-}> = [];
 
 function processQueue(error: unknown, token: string | null = null): void {
     failedQueue.forEach(({ resolve, reject }) => {
@@ -42,70 +33,102 @@ function processQueue(error: unknown, token: string | null = null): void {
     failedQueue = [];
 }
 
-api.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError<ApiError>) => {
-        const originalRequest = error.config;
-
-        if (!originalRequest || error.response?.status !== 401) {
-            return Promise.reject(error);
+const attachInterceptors = (instance: AxiosInstance): void => {
+    instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
 
-        // Don't retry refresh or login requests
-        if (
-            originalRequest.url?.includes('/auth/refresh') ||
-            originalRequest.url?.includes('/auth/login')
-        ) {
-            return Promise.reject(error);
+        const tenantId = localStorage.getItem('current_tenant_id');
+        if (tenantId) {
+            config.headers['X-Tenant-ID'] = tenantId;
         }
 
-        if (isRefreshing) {
-            return new Promise((resolve, reject) => {
-                failedQueue.push({ resolve, reject });
-            }).then((token) => {
-                if (originalRequest.headers) {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
+        return config;
+    });
+
+    instance.interceptors.response.use(
+        (response) => response,
+        async (error: AxiosError<ApiError>) => {
+            const originalRequest = error.config;
+
+            if (!originalRequest || error.response?.status !== 401) {
+                return Promise.reject(error);
+            }
+
+            if (
+                originalRequest.url?.includes('/auth/refresh') ||
+                originalRequest.url?.includes('/auth/login')
+            ) {
+                return Promise.reject(error);
+            }
+
+            if (isRefreshing) {
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject });
+                }).then((token) => {
+                    if (originalRequest.headers && token) {
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                    }
+                    return instance(originalRequest);
+                });
+            }
+
+            isRefreshing = true;
+
+            try {
+                const refreshToken = localStorage.getItem('refresh_token');
+                if (!refreshToken) {
+                    throw new Error('No refresh token');
                 }
-                return api(originalRequest);
-            });
-        }
 
-        isRefreshing = true;
+                const { data } = await axios.post('/api/v1/auth/refresh', {
+                    refresh_token: refreshToken,
+                });
 
-        try {
-            const refreshToken = localStorage.getItem('refresh_token');
-            if (!refreshToken) {
-                throw new Error('No refresh token');
+                const newAccessToken = data.access_token as string;
+                const newRefreshToken = data.refresh_token as string;
+
+                localStorage.setItem('access_token', newAccessToken);
+                localStorage.setItem('refresh_token', newRefreshToken);
+
+                processQueue(null, newAccessToken);
+
+                if (originalRequest.headers) {
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                }
+
+                return instance(originalRequest);
+            } catch (refreshError) {
+                processQueue(refreshError, null);
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('current_tenant_id');
+                window.location.href = '/login';
+                return Promise.reject(refreshError);
+            } finally {
+                isRefreshing = false;
             }
+        },
+    );
+};
 
-            const { data } = await axios.post('/api/v1/auth/refresh', {
-                refresh_token: refreshToken,
-            });
+attachInterceptors(api);
 
-            const newAccessToken = data.access_token as string;
-            const newRefreshToken = data.refresh_token as string;
+export function createApiInstance(config?: CreateAxiosDefaults): AxiosInstance {
+    const mergedConfig: CreateAxiosDefaults = {
+        ...baseConfig,
+        ...config,
+        headers: {
+            ...(baseConfig.headers ?? {}),
+            ...(config?.headers ?? {}),
+        },
+    };
 
-            localStorage.setItem('access_token', newAccessToken);
-            localStorage.setItem('refresh_token', newRefreshToken);
-
-            processQueue(null, newAccessToken);
-
-            if (originalRequest.headers) {
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            }
-
-            return api(originalRequest);
-        } catch (refreshError) {
-            processQueue(refreshError, null);
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('current_tenant_id');
-            window.location.href = '/login';
-            return Promise.reject(refreshError);
-        } finally {
-            isRefreshing = false;
-        }
-    },
-);
+    const instance = axios.create(mergedConfig);
+    attachInterceptors(instance);
+    return instance;
+}
 
 export default api;

@@ -22,8 +22,12 @@
                         :to="`/admin/tenants/${t.id}`"
                         class="block px-4 py-3 hover:bg-gray-700/50"
                     >
-                        <p class="text-sm font-medium text-white">{{ t.name }}</p>
-                        <p class="text-xs text-gray-400">{{ t.slug }}</p>
+                        <p class="text-sm font-medium text-white">
+                            {{ t.name }}
+                        </p>
+                        <p class="text-xs text-gray-400">
+                            {{ t.slug }}
+                        </p>
                     </router-link>
                 </div>
             </div>
@@ -37,8 +41,12 @@
                         :to="`/admin/users/${u.id}`"
                         class="block px-4 py-3 hover:bg-gray-700/50"
                     >
-                        <p class="text-sm font-medium text-white">{{ u.name }}</p>
-                        <p class="text-xs text-gray-400">{{ u.email }}</p>
+                        <p class="text-sm font-medium text-white">
+                            {{ u.name }}
+                        </p>
+                        <p class="text-xs text-gray-400">
+                            {{ u.email }}
+                        </p>
                     </router-link>
                 </div>
             </div>
@@ -47,7 +55,9 @@
                 <h2 class="text-sm font-medium text-gray-400 uppercase mb-2">Customers</h2>
                 <div class="bg-gray-800 rounded-lg border border-gray-700 divide-y divide-gray-700">
                     <div v-for="c in results.customers" :key="c.id" class="px-4 py-3">
-                        <p class="text-sm font-medium text-white">{{ c.name }}</p>
+                        <p class="text-sm font-medium text-white">
+                            {{ c.name }}
+                        </p>
                         <p class="text-xs text-gray-400">
                             {{ c.email }} &middot; {{ c.tenant_name }}
                         </p>

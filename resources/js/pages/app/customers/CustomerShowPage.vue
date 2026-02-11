@@ -2,10 +2,12 @@
     <div>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-4">
-                <router-link to="/customers" class="text-sm text-gray-500 hover:text-gray-700"
-                    >&larr; Back</router-link
-                >
-                <h1 class="text-2xl font-bold text-gray-900">{{ customer?.name ?? 'Customer' }}</h1>
+                <router-link to="/customers" class="text-sm text-gray-500 hover:text-gray-700">
+                    &larr; Back
+                </router-link>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {{ customer?.name ?? 'Customer' }}
+                </h1>
                 <span
                     v-if="customer"
                     :class="[
@@ -25,9 +27,9 @@
                 >
                     Edit
                 </router-link>
-                <BaseButton variant="danger" size="sm" @click="showDelete = true"
-                    >Delete</BaseButton
-                >
+                <BaseButton variant="danger" size="sm" @click="showDelete = true">
+                    Delete
+                </BaseButton>
             </div>
         </div>
 
@@ -49,15 +51,21 @@
                             </div>
                             <div>
                                 <dt class="text-sm text-gray-500">Email</dt>
-                                <dd class="text-sm text-gray-900">{{ customer.email ?? '—' }}</dd>
+                                <dd class="text-sm text-gray-900">
+                                    {{ customer.email ?? '—' }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-sm text-gray-500">Phone</dt>
-                                <dd class="text-sm text-gray-900">{{ customer.phone ?? '—' }}</dd>
+                                <dd class="text-sm text-gray-900">
+                                    {{ customer.phone ?? '—' }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-sm text-gray-500">Company</dt>
-                                <dd class="text-sm text-gray-900">{{ customer.company ?? '—' }}</dd>
+                                <dd class="text-sm text-gray-900">
+                                    {{ customer.company ?? '—' }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-sm text-gray-500">Created</dt>
@@ -80,8 +88,8 @@
                                 {{ tag.name }}
                                 <button
                                     v-if="tenantStore.canWrite"
-                                    @click="removeTag(tag.id)"
                                     class="text-indigo-400 hover:text-indigo-600"
+                                    @click="removeTag(tag.id)"
                                 >
                                     &times;
                                 </button>
@@ -105,8 +113,9 @@
                                 variant="secondary"
                                 size="sm"
                                 @click="addTag"
-                                >Add</BaseButton
                             >
+                                Add
+                            </BaseButton>
                         </div>
                     </div>
 
@@ -132,8 +141,8 @@
                         </div>
                         <form
                             v-if="tenantStore.canWrite"
-                            @submit.prevent="addNote"
                             class="flex gap-2"
+                            @submit.prevent="addNote"
                         >
                             <input
                                 v-model="newNote"
@@ -146,8 +155,9 @@
                                 variant="primary"
                                 size="sm"
                                 :loading="addingNote"
-                                >Add</BaseButton
                             >
+                                Add
+                            </BaseButton>
                         </form>
                     </div>
 
@@ -184,15 +194,15 @@
                                 </div>
                                 <div class="flex gap-2">
                                     <button
-                                        @click="downloadFile(file.id)"
                                         class="text-xs text-indigo-600 hover:text-indigo-800"
+                                        @click="downloadFile(file.id)"
                                     >
                                         Download
                                     </button>
                                     <button
                                         v-if="tenantStore.canWrite"
-                                        @click="deleteFile(file.id)"
                                         class="text-xs text-red-600 hover:text-red-800"
+                                        @click="deleteFile(file.id)"
                                     >
                                         Remove
                                     </button>
@@ -231,7 +241,7 @@
                             No activity yet.
                         </div>
                         <div v-else class="relative">
-                            <div class="absolute left-3 top-0 bottom-0 w-px bg-gray-200"></div>
+                            <div class="absolute left-3 top-0 bottom-0 w-px bg-gray-200" />
                             <div
                                 v-for="activity in activities"
                                 :key="activity.id"
@@ -239,8 +249,10 @@
                             >
                                 <div
                                     class="absolute left-1.5 top-1 h-3 w-3 rounded-full border-2 border-gray-300 bg-white"
-                                ></div>
-                                <p class="text-sm text-gray-700">{{ activity.description }}</p>
+                                />
+                                <p class="text-sm text-gray-700">
+                                    {{ activity.description }}
+                                </p>
                                 <p class="text-xs text-gray-400 mt-0.5">
                                     {{ formatRelative(activity.created_at) }}
                                 </p>
@@ -262,16 +274,17 @@
                     Are you sure? This action cannot be undone.
                 </p>
                 <div class="flex justify-end gap-2">
-                    <BaseButton variant="ghost" size="sm" @click="showDelete = false"
-                        >Cancel</BaseButton
-                    >
+                    <BaseButton variant="ghost" size="sm" @click="showDelete = false">
+                        Cancel
+                    </BaseButton>
                     <BaseButton
                         variant="danger"
                         size="sm"
                         :loading="deleting"
                         @click="deleteCustomer"
-                        >Delete</BaseButton
                     >
+                        Delete
+                    </BaseButton>
                 </div>
             </div>
         </div>

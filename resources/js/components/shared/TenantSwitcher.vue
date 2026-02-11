@@ -1,8 +1,8 @@
 <template>
-    <div class="relative" ref="switcherRef">
+    <div ref="switcherRef" class="relative">
         <button
-            @click="open = !open"
             class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5"
+            @click="open = !open"
         >
             <Building2 class="h-4 w-4" />
             <span>{{ tenantStore.current?.name ?? 'Select workspace' }}</span>
@@ -16,13 +16,13 @@
             <button
                 v-for="tenant in tenantStore.all"
                 :key="tenant.id"
-                @click="switchTenant(tenant)"
                 :class="[
                     'w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center justify-between',
                     tenant.id === tenantStore.currentId
                         ? 'text-gray-900 font-medium'
                         : 'text-gray-600',
                 ]"
+                @click="switchTenant(tenant)"
             >
                 <span>{{ tenant.name }}</span>
                 <Check v-if="tenant.id === tenantStore.currentId" class="h-4 w-4 text-gray-600" />

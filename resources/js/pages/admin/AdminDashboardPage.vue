@@ -8,8 +8,12 @@
                 :key="stat.label"
                 class="bg-gray-800 rounded-lg border border-gray-700 p-6"
             >
-                <p class="text-sm text-gray-400">{{ stat.label }}</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stat.value }}</p>
+                <p class="text-sm text-gray-400">
+                    {{ stat.label }}
+                </p>
+                <p class="text-2xl font-bold text-white mt-1">
+                    {{ stat.value }}
+                </p>
             </div>
         </div>
 
@@ -22,9 +26,11 @@
             </div>
             <ul v-else class="space-y-3">
                 <li v-for="action in recentActions" :key="action.id" class="flex items-start gap-3">
-                    <div class="flex-shrink-0 mt-1 h-2 w-2 rounded-full bg-indigo-400"></div>
+                    <div class="flex-shrink-0 mt-1 h-2 w-2 rounded-full bg-indigo-400" />
                     <div>
-                        <p class="text-sm text-gray-200">{{ action.description }}</p>
+                        <p class="text-sm text-gray-200">
+                            {{ action.description }}
+                        </p>
                         <p class="text-xs text-gray-500 mt-0.5">
                             {{ formatRelative(action.created_at) }}
                         </p>

@@ -1,4 +1,4 @@
-import api from './client';
+import api, { createApiInstance } from './client';
 import type {
     LoginCredentials,
     LoginResult,
@@ -21,7 +21,6 @@ import type {
     AdminTenantDetail,
     AdminUserDetail,
     HealthCheck,
-    Subscription,
 } from './types';
 
 // ─── Auth ──────────────────────────────────────────────
@@ -398,17 +397,7 @@ export const invitePublicApi = {
 
 // ─── Admin ──────────────────────────────────────────
 
-let adminApi = api;
-if (api.create) {
-    adminApi = api.create({ baseURL: '/admin/api/v1' });
-    // Copy interceptors from api to adminApi
-    api.interceptors.request.forEach((handler) => {
-        adminApi.interceptors.request.use(handler.fulfilled, handler.rejected);
-    });
-    api.interceptors.response.forEach((handler) => {
-        adminApi.interceptors.response.use(handler.fulfilled, handler.rejected);
-    });
-}
+const adminApi = createApiInstance({ baseURL: '/admin/api/v1' });
 
 export const adminTenantsApi = {
     list(params?: Record<string, unknown>) {

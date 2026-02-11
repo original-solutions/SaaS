@@ -9,8 +9,8 @@
                 <template v-if="timeRemaining"> &middot; {{ timeRemaining }} remaining</template>
             </span>
             <button
-                @click="stopImpersonation"
                 class="px-3 py-1 bg-amber-800 text-white rounded-md text-xs hover:bg-amber-900"
+                @click="stopImpersonation"
             >
                 Stop Impersonating
             </button>

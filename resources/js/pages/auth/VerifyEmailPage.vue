@@ -4,7 +4,7 @@
             <div class="text-center py-8">
                 <div
                     class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"
-                ></div>
+                />
                 <p class="mt-3 text-sm text-gray-600">Verifying your email...</p>
             </div>
         </template>
@@ -48,7 +48,9 @@
                 </p>
 
                 <div v-if="error" class="rounded-md bg-red-50 p-4 mb-4">
-                    <p class="text-sm text-red-800">{{ error }}</p>
+                    <p class="text-sm text-red-800">
+                        {{ error }}
+                    </p>
                 </div>
 
                 <div v-if="resent" class="rounded-md bg-green-50 p-4 mb-4">

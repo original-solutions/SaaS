@@ -1,24 +1,24 @@
 <template>
-    <form @submit.prevent="$emit('submit', form)" class="space-y-4">
-        <BaseInput v-model="form.name" label="Name" :error="errors.name" id="name" />
+    <form class="space-y-4" @submit.prevent="$emit('submit', form)">
+        <BaseInput id="name" v-model="form.name" label="Name" :error="errors.name" />
 
         <BaseInput
+            id="email"
             v-model="form.email"
             label="Email"
             type="email"
             :error="errors.email"
-            id="email"
         />
 
-        <BaseInput v-model="form.phone" label="Phone" :error="errors.phone" id="phone" />
+        <BaseInput id="phone" v-model="form.phone" label="Phone" :error="errors.phone" />
 
-        <BaseInput v-model="form.company" label="Company" :error="errors.company" id="company" />
+        <BaseInput id="company" v-model="form.company" label="Company" :error="errors.company" />
 
         <div>
             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
-                v-model="form.status"
                 id="status"
+                v-model="form.status"
                 class="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
             >
                 <option value="active">Active</option>

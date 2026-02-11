@@ -31,7 +31,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                             Last Login
                         </th>
-                        <th class="px-6 py-3"></th>
+                        <th class="px-6 py-3" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
@@ -47,40 +47,44 @@
                     </tr>
                     <tr v-for="u in users" :key="u.id" class="hover:bg-gray-700/50">
                         <td class="px-6 py-4 text-sm font-medium text-white">
-                            <router-link :to="`/admin/users/${u.id}`" class="hover:underline">{{
-                                u.name
-                            }}</router-link>
+                            <router-link :to="`/admin/users/${u.id}`" class="hover:underline">
+                                {{ u.name }}
+                            </router-link>
                             <span v-if="u.is_super_admin" class="ml-1 text-xs text-indigo-400"
                                 >(admin)</span
                             >
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-300">{{ u.email }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            {{ u.email }}
+                        </td>
                         <td class="px-6 py-4">
                             <span v-if="u.locked_at" class="text-xs text-red-400">Locked</span>
                             <span v-else class="text-xs text-green-400">Active</span>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-300">{{ u.tenants_count ?? 0 }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            {{ u.tenants_count ?? 0 }}
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-400">
                             {{ u.last_login_at ? formatDate(u.last_login_at) : '—' }}
                         </td>
                         <td class="px-6 py-4 text-right space-x-2">
                             <button
                                 v-if="u.locked_at"
-                                @click="unlockUser(u)"
                                 class="text-xs text-green-400 hover:text-green-300"
+                                @click="unlockUser(u)"
                             >
                                 Unlock
                             </button>
                             <button
                                 v-else
-                                @click="lockUser(u)"
                                 class="text-xs text-red-400 hover:text-red-300"
+                                @click="lockUser(u)"
                             >
                                 Lock
                             </button>
                             <button
-                                @click="impersonateUser(u)"
                                 class="text-xs text-indigo-400 hover:text-indigo-300"
+                                @click="impersonateUser(u)"
                             >
                                 Impersonate
                             </button>
@@ -97,15 +101,15 @@
             <div class="flex gap-2">
                 <button
                     :disabled="pagination.currentPage <= 1"
-                    @click="fetchUsers(pagination.currentPage - 1)"
                     class="px-3 py-1 text-sm border border-gray-600 rounded-md text-gray-300 disabled:opacity-50"
+                    @click="fetchUsers(pagination.currentPage - 1)"
                 >
                     Previous
                 </button>
                 <button
                     :disabled="pagination.currentPage >= pagination.lastPage"
-                    @click="fetchUsers(pagination.currentPage + 1)"
                     class="px-3 py-1 text-sm border border-gray-600 rounded-md text-gray-300 disabled:opacity-50"
+                    @click="fetchUsers(pagination.currentPage + 1)"
                 >
                     Next
                 </button>
@@ -175,7 +179,8 @@ async function unlockUser(u: AdminUserDetail): Promise<void> {
 async function impersonateUser(u: AdminUserDetail): Promise<void> {
     try {
         const { data } = await adminUsersApi.impersonate(u.id);
-        authStore.startImpersonation(data.token, data.expires_at);
+        const payload = data.data;
+        authStore.startImpersonation(payload.access_token, payload.expires_at);
         await authStore.fetchUser();
         notifications.info(`Now impersonating ${u.name}.`);
         router.push('/');

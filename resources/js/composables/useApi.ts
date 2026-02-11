@@ -2,24 +2,26 @@ import { ref, type Ref } from 'vue';
 import type { AxiosError } from 'axios';
 import type { ApiError } from '@/api/types';
 
+type ApiFunction<T> = (...args: unknown[]) => Promise<{ data: T }>;
+
 interface UseApiReturn<T> {
     data: Ref<T | null>;
     error: Ref<string | null>;
     errors: Ref<Record<string, string>>;
     isLoading: Ref<boolean>;
-    execute: (...args: unknown[]) => Promise<T | null>;
+    execute: (...args: Parameters<ApiFunction<T>>) => Promise<T | null>;
 }
 
 /**
  * Composable for wrapping async API calls with loading/error state.
  */
-export function useApi<T>(fn: (...args: unknown[]) => Promise<{ data: T }>): UseApiReturn<T> {
+export function useApi<T>(fn: ApiFunction<T>): UseApiReturn<T> {
     const data = ref<T | null>(null) as Ref<T | null>;
     const error = ref<string | null>(null);
     const errors = ref<Record<string, string>>({});
     const isLoading = ref(false);
 
-    async function execute(...args: unknown[]): Promise<T | null> {
+    async function execute(...args: Parameters<ApiFunction<T>>): Promise<T | null> {
         isLoading.value = true;
         error.value = null;
         errors.value = {};

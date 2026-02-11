@@ -11,9 +11,10 @@
                 }}
             </p>
 
-            <form @submit.prevent="handleTwoFactor" class="space-y-4">
+            <form class="space-y-4" @submit.prevent="handleTwoFactor">
                 <BaseInput
                     v-if="!useRecoveryCode"
+                    id="2fa-code"
                     v-model="twoFactorCode"
                     label="Authentication Code"
                     type="text"
@@ -21,20 +22,21 @@
                     autocomplete="one-time-code"
                     placeholder="000000"
                     :error="errors.general"
-                    id="2fa-code"
                 />
 
                 <BaseInput
                     v-else
+                    id="recovery-code"
                     v-model="recoveryCode"
                     label="Recovery Code"
                     type="text"
                     placeholder="XXXXXXXX"
                     :error="errors.general"
-                    id="recovery-code"
                 />
 
-                <p v-if="errors.general" class="text-sm text-red-600">{{ errors.general }}</p>
+                <p v-if="errors.general" class="text-sm text-red-600">
+                    {{ errors.general }}
+                </p>
 
                 <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">
                     Verify
@@ -56,26 +58,28 @@
         <template v-else>
             <h2 class="text-lg font-semibold text-gray-900 mb-6">Sign in</h2>
 
-            <form @submit.prevent="handleLogin" class="space-y-4">
+            <form class="space-y-4" @submit.prevent="handleLogin">
                 <BaseInput
+                    id="email"
                     v-model="form.email"
                     label="Email"
                     type="email"
                     placeholder="you@example.com"
                     :error="errors.email"
-                    id="email"
                 />
 
                 <BaseInput
+                    id="password"
                     v-model="form.password"
                     label="Password"
                     type="password"
                     placeholder="••••••••"
                     :error="errors.password"
-                    id="password"
                 />
 
-                <p v-if="errors.general" class="text-sm text-red-600">{{ errors.general }}</p>
+                <p v-if="errors.general" class="text-sm text-red-600">
+                    {{ errors.general }}
+                </p>
 
                 <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">
                     Sign in

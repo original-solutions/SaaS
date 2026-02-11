@@ -4,19 +4,21 @@
             <div class="text-center py-8">
                 <div
                     class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"
-                ></div>
+                />
                 <p class="mt-3 text-sm text-gray-600">Loading invitation details...</p>
             </div>
         </template>
 
         <template v-else-if="error">
             <div class="rounded-md bg-red-50 p-4 mb-4">
-                <p class="text-sm text-red-800">{{ error }}</p>
+                <p class="text-sm text-red-800">
+                    {{ error }}
+                </p>
             </div>
             <div class="text-center">
-                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900"
-                    >Go to sign in</router-link
-                >
+                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">
+                    Go to sign in
+                </router-link>
             </div>
         </template>
 
@@ -53,15 +55,21 @@
                     <dl class="space-y-2 text-sm">
                         <div class="flex justify-between">
                             <dt class="text-gray-500">Invited email</dt>
-                            <dd class="text-gray-900">{{ invitation.email }}</dd>
+                            <dd class="text-gray-900">
+                                {{ invitation.email }}
+                            </dd>
                         </div>
                         <div class="flex justify-between">
                             <dt class="text-gray-500">Role</dt>
-                            <dd class="text-gray-900 capitalize">{{ invitation.role }}</dd>
+                            <dd class="text-gray-900 capitalize">
+                                {{ invitation.role }}
+                            </dd>
                         </div>
                         <div class="flex justify-between">
                             <dt class="text-gray-500">Expires</dt>
-                            <dd class="text-gray-900">{{ formatDate(invitation.expires_at) }}</dd>
+                            <dd class="text-gray-900">
+                                {{ formatDate(invitation.expires_at) }}
+                            </dd>
                         </div>
                     </dl>
                 </div>

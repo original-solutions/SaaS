@@ -13,20 +13,20 @@
                 </p>
             </div>
             <div class="mt-4 text-center">
-                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900"
-                    >Back to sign in</router-link
-                >
+                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">
+                    Back to sign in
+                </router-link>
             </div>
         </template>
 
-        <form v-else @submit.prevent="handleSubmit" class="space-y-4">
+        <form v-else class="space-y-4" @submit.prevent="handleSubmit">
             <BaseInput
+                id="email"
                 v-model="email"
                 label="Email"
                 type="email"
                 placeholder="you@example.com"
                 :error="error"
-                id="email"
             />
 
             <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">
@@ -34,9 +34,9 @@
             </BaseButton>
 
             <div class="text-center">
-                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900"
-                    >Back to sign in</router-link
-                >
+                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">
+                    Back to sign in
+                </router-link>
             </div>
         </form>
     </GuestLayout>

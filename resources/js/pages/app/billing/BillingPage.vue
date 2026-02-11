@@ -76,8 +76,9 @@
                     <router-link
                         to="/billing/plans"
                         class="text-indigo-600 hover:text-indigo-800 font-medium"
-                        >View available plans &rarr;</router-link
                     >
+                        View available plans &rarr;
+                    </router-link>
                 </div>
             </div>
 

@@ -5,15 +5,21 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="bg-gray-800 rounded-lg border border-gray-700 p-4">
                 <p class="text-sm text-gray-400">Pending</p>
-                <p class="text-2xl font-semibold text-white mt-1">{{ stats.pending }}</p>
+                <p class="text-2xl font-semibold text-white mt-1">
+                    {{ stats.pending }}
+                </p>
             </div>
             <div class="bg-gray-800 rounded-lg border border-gray-700 p-4">
                 <p class="text-sm text-gray-400">Processing</p>
-                <p class="text-2xl font-semibold text-yellow-400 mt-1">{{ stats.processing }}</p>
+                <p class="text-2xl font-semibold text-yellow-400 mt-1">
+                    {{ stats.processing }}
+                </p>
             </div>
             <div class="bg-gray-800 rounded-lg border border-gray-700 p-4">
                 <p class="text-sm text-gray-400">Failed</p>
-                <p class="text-2xl font-semibold text-red-400 mt-1">{{ stats.failed }}</p>
+                <p class="text-2xl font-semibold text-red-400 mt-1">
+                    {{ stats.failed }}
+                </p>
             </div>
         </div>
 
@@ -21,8 +27,8 @@
             <h2 class="text-lg font-semibold text-white">Failed Jobs</h2>
             <button
                 v-if="failedJobs.length > 0"
-                @click="retryAll"
                 class="px-3 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+                @click="retryAll"
             >
                 Retry All
             </button>
@@ -44,7 +50,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                             Failed At
                         </th>
-                        <th class="px-6 py-3"></th>
+                        <th class="px-6 py-3" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
@@ -59,8 +65,12 @@
                         </td>
                     </tr>
                     <tr v-for="j in failedJobs" :key="j.id" class="hover:bg-gray-700/50">
-                        <td class="px-6 py-4 text-sm text-white font-mono">{{ j.id }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-300">{{ j.queue }}</td>
+                        <td class="px-6 py-4 text-sm text-white font-mono">
+                            {{ j.id }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            {{ j.queue }}
+                        </td>
                         <td
                             class="px-6 py-4 text-sm text-red-400 truncate max-w-xs"
                             :title="j.exception"
@@ -72,8 +82,8 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <button
-                                @click="retryJob(j.id)"
                                 class="text-xs text-indigo-400 hover:text-indigo-300"
+                                @click="retryJob(j.id)"
                             >
                                 Retry
                             </button>

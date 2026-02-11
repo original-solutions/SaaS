@@ -11,8 +11,8 @@
             >
                 <span>{{ notification.message }}</span>
                 <button
-                    @click="store.remove(notification.id)"
                     class="opacity-60 hover:opacity-100 shrink-0"
+                    @click="store.remove(notification.id)"
                 >
                     <X class="h-4 w-4" />
                 </button>
