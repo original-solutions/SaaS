@@ -5,7 +5,7 @@
     </label>
 
     <Select
-      :model-value="String(modelValue ?? '')"
+      :model-value="internalValue"
       :disabled="disabled"
       @update:model-value="onUpdate"
     >
@@ -15,8 +15,8 @@
       <SelectContent>
         <SelectItem
           v-for="option in options"
-          :key="option.value"
-          :value="option.value"
+          :key="option.value || EMPTY_VALUE"
+          :value="option.value || EMPTY_VALUE"
           :disabled="option.disabled"
         >
           {{ option.label }}
@@ -51,7 +51,7 @@ type Option = {
   disabled?: boolean;
 };
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue?: string | number | null;
     options: Option[];
@@ -81,6 +81,20 @@ const attrs = useAttrs();
 
 const wrapperClass = computed(() => attrs.class);
 
+const EMPTY_VALUE = '__base_select_empty__';
+
+const hasEmptyOption = computed(() => props.options.some((o) => o.value === ''));
+
+const internalValue = computed(() => {
+  const external = String(props.modelValue ?? '');
+
+  if (external === '' && hasEmptyOption.value) {
+    return EMPTY_VALUE;
+  }
+
+  return external;
+});
+
 const triggerAttrs = computed(() => {
   const rest = { ...attrs } as Record<string, unknown>;
 
@@ -90,6 +104,11 @@ const triggerAttrs = computed(() => {
 });
 
 function onUpdate(value: unknown): void {
+  if (value === EMPTY_VALUE) {
+    emit('update:modelValue', '');
+    return;
+  }
+
   emit('update:modelValue', String(value ?? ''));
 }
 </script>
