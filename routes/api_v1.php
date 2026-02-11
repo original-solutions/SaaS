@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BillingController;
 use App\Http\Controllers\Api\V1\DeviceSessionController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\FileController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonalAccessTokenController;
+use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\TwoFactorController;
@@ -29,8 +31,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public auth routes
 Route::prefix('auth')->group(function (): void {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth-login');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:auth-refresh');
     Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword']);
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
     Route::post('/magic-link', [MagicLinkController::class, 'request']);
@@ -40,10 +42,13 @@ Route::prefix('auth')->group(function (): void {
 // Public invitation view (no auth required to view details)
 Route::get('/invitations/{token}', [InvitationController::class, 'show']);
 
+// Stripe webhook (public, verified by signature)
+Route::post('/webhooks/stripe', StripeWebhookController::class);
+
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function (): void {
     // Auth
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('throttle:auth-logout');
     Route::get('/me', [AuthController::class, 'me']);
 
     // Email verification
@@ -94,6 +99,12 @@ Route::middleware('auth:sanctum')->group(function (): void {
         ->name('invitations.accept');
     Route::post('/invitations/{token}/decline', [InvitationController::class, 'decline']);
 
+    // Billing
+    Route::get('/billing/plans', [BillingController::class, 'plans']);
+    Route::middleware('tenant')->group(function (): void {
+        Route::get('/billing', [BillingController::class, 'index']);
+    });
+
     // Notifications
     Route::prefix('notifications')->group(function (): void {
         Route::get('/', [NotificationController::class, 'index']);
@@ -103,8 +114,8 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::put('/preferences', [NotificationController::class, 'updatePreference']);
     });
 
-    // Tenant-scoped resources (require tenant middleware)
-    Route::middleware('tenant')->group(function (): void {
+    // Tenant-scoped resources (require tenant middleware + subscription check)
+    Route::middleware(['tenant', 'subscribed'])->group(function (): void {
         // Files
         Route::prefix('files')->group(function (): void {
             Route::post('/', [FileController::class, 'store']);

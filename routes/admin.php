@@ -54,8 +54,10 @@ Route::middleware(['auth:sanctum', 'super-admin'])->group(function (): void {
     });
 
     // Impersonation
-    Route::post('/impersonate/{user}/start', [ImpersonationController::class, 'start']);
-    Route::post('/impersonate/{user}/stop', [ImpersonationController::class, 'stop']);
+    Route::middleware('throttle:admin-impersonate')->group(function (): void {
+        Route::post('/impersonate/{user}/start', [ImpersonationController::class, 'start']);
+        Route::post('/impersonate/{user}/stop', [ImpersonationController::class, 'stop']);
+    });
 
     // Admin notes
     Route::prefix('notes')->group(function (): void {
