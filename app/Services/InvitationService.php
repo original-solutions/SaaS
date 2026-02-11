@@ -137,9 +137,9 @@ class InvitationService
         $parts = explode('@', $email);
         $local = $parts[0];
         $domain = $parts[1] ?? '';
-        $masked = substr($local, 0, 1) . str_repeat('*', max(strlen($local) - 1, 3));
+        $masked = substr($local, 0, 1).str_repeat('*', max(strlen($local) - 1, 3));
 
-        return $masked . '@' . $domain;
+        return $masked.'@'.$domain;
     }
 
     /**

@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'tenant' => \App\Http\Middleware\ResolveTenant::class,
+            'super-admin' => \App\Http\Middleware\SuperAdminOnly::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
