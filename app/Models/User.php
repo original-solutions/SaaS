@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -23,6 +24,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'is_super_admin',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'last_login_at',
+        'locked_at',
     ];
 
     /**
@@ -53,6 +58,21 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function deviceSessions(): HasMany
+    {
+        return $this->hasMany(DeviceSession::class);
+    }
+
+    public function refreshTokens(): HasMany
+    {
+        return $this->hasMany(RefreshToken::class);
+    }
+
+    public function loginEvents(): HasMany
+    {
+        return $this->hasMany(LoginEvent::class);
+    }
+
     /**
      * Check if user account is locked.
      */
@@ -67,5 +87,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isSuperAdmin(): bool
     {
         return $this->is_super_admin === true;
+    }
+
+    /**
+     * Check if user has 2FA enabled.
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return $this->two_factor_secret !== null;
     }
 }

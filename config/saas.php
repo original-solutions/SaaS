@@ -46,6 +46,7 @@ return [
 
     'revoke_all_on_reuse' => env('SAAS_REVOKE_ALL_ON_REUSE', true),
     'two_factor_enabled' => env('SAAS_TWO_FACTOR_ENABLED', true),
+    'magic_link_login' => env('SAAS_MAGIC_LINK_LOGIN', false),
 
     /*
     |--------------------------------------------------------------------------
