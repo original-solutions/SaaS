@@ -3,11 +3,15 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DeviceSessionController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
+use App\Http\Controllers\Api\V1\FileController;
+use App\Http\Controllers\Api\V1\ImportController;
 use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\MagicLinkController;
+use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonalAccessTokenController;
+use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\TwoFactorController;
 use App\Http\Controllers\Api\V1\UserAccountController;
@@ -97,5 +101,40 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/read-all', [NotificationController::class, 'markAllRead']);
         Route::get('/preferences', [NotificationController::class, 'preferences']);
         Route::put('/preferences', [NotificationController::class, 'updatePreference']);
+    });
+
+    // Tenant-scoped resources (require tenant middleware)
+    Route::middleware('tenant')->group(function (): void {
+        // Files
+        Route::prefix('files')->group(function (): void {
+            Route::post('/', [FileController::class, 'store']);
+            Route::get('/{file}/download', [FileController::class, 'download']);
+            Route::post('/upload-url', [FileController::class, 'uploadUrl']);
+            Route::delete('/{file}', [FileController::class, 'destroy']);
+        });
+
+        // Notes
+        Route::prefix('notes')->group(function (): void {
+            Route::get('/', [NoteController::class, 'index']);
+            Route::post('/', [NoteController::class, 'store']);
+            Route::put('/{note}', [NoteController::class, 'update']);
+            Route::delete('/{note}', [NoteController::class, 'destroy']);
+        });
+
+        // Tags
+        Route::prefix('tags')->group(function (): void {
+            Route::get('/', [TagController::class, 'index']);
+            Route::post('/', [TagController::class, 'store']);
+            Route::put('/{tag}', [TagController::class, 'update']);
+            Route::delete('/{tag}', [TagController::class, 'destroy']);
+            Route::post('/{tag}/attach', [TagController::class, 'attach']);
+            Route::post('/{tag}/detach', [TagController::class, 'detach']);
+        });
+
+        // Imports
+        Route::prefix('imports')->group(function (): void {
+            Route::post('/', [ImportController::class, 'store']);
+            Route::get('/{import}', [ImportController::class, 'show']);
+        });
     });
 });
