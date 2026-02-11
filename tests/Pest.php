@@ -54,7 +54,6 @@ function actingAsSuperAdmin(): Tests\TestCase
         'is_super_admin' => true,
     ]);
 
-    // Spatie role assignment will be added in Phase 3 after role seeder exists
     return test()->actingAs($user, 'sanctum');
 }
 

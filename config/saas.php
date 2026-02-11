@@ -117,4 +117,21 @@ return [
         'posthog_key' => env('POSTHOG_KEY'),
         'otel_endpoint' => env('OTEL_EXPORTER_ENDPOINT'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | RBAC Extension Path
+    |--------------------------------------------------------------------------
+    |
+    | Current setup uses role-based access control (RBAC) with Spatie roles only.
+    | To add granular permissions:
+    |
+    | 1. Create Permission records: Permission::create(['name' => 'customers.create', 'guard_name' => 'api']);
+    | 2. Assign permissions to roles: $role->givePermissionTo('customers.create');
+    | 3. Change policy checks from $user->hasRole('owner') to $user->hasPermissionTo('customers.delete').
+    | 4. Spatie handles role→permission resolution automatically.
+    | 5. Zero schema change required — `permissions` and `role_has_permissions` tables already exist.
+    |
+    */
+
 ];

@@ -1,5 +1,21 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| RBAC Extension Path (see also config/saas.php)
+|--------------------------------------------------------------------------
+|
+| This application currently uses roles only (owner, admin, member, readonly).
+| The permissions and role_has_permissions tables are available for granular
+| permission-based access control. No schema changes needed to extend.
+|
+| Example:
+|   Permission::create(['name' => 'invoices.export', 'guard_name' => 'api']);
+|   $adminRole->givePermissionTo('invoices.export');
+|   // In policy: $user->hasPermissionTo('invoices.export')
+|
+*/
+
 return [
 
     'models' => [

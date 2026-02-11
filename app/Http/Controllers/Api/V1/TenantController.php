@@ -21,6 +21,8 @@ class TenantController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Tenant::class);
+
         $tenants = $request->user()
             ->tenants()
             ->withPivot('role', 'joined_at')
@@ -34,6 +36,8 @@ class TenantController extends Controller
      */
     public function store(CreateTenantRequest $request): JsonResponse
     {
+        $this->authorize('create', Tenant::class);
+
         $tenant = Tenant::create([
             'name' => $request->validated('name'),
             'slug' => $request->validated('slug'),
@@ -52,13 +56,7 @@ class TenantController extends Controller
      */
     public function show(Request $request, Tenant $tenant): JsonResponse
     {
-        // User must be a member or super admin
-        if (! $request->user()->isSuperAdmin()) {
-            $isMember = $request->user()->tenants()->where('tenants.id', $tenant->id)->exists();
-            if (! $isMember) {
-                abort(403);
-            }
-        }
+        $this->authorize('view', $tenant);
 
         return response()->json(['data' => $tenant]);
     }
@@ -68,6 +66,8 @@ class TenantController extends Controller
      */
     public function update(UpdateTenantRequest $request, Tenant $tenant): JsonResponse
     {
+        $this->authorize('update', $tenant);
+
         $tenant->update($request->validated());
 
         return response()->json(['data' => $tenant->fresh()]);
@@ -78,17 +78,7 @@ class TenantController extends Controller
      */
     public function destroy(Request $request, Tenant $tenant): JsonResponse
     {
-        // Only Owner or Super Admin can delete
-        if (! $request->user()->isSuperAdmin()) {
-            $isOwner = $request->user()->tenants()
-                ->where('tenants.id', $tenant->id)
-                ->wherePivot('role', TenantRole::Owner->value)
-                ->exists();
-
-            if (! $isOwner) {
-                abort(403);
-            }
-        }
+        $this->authorize('delete', $tenant);
 
         $tenant->update(['status' => TenantStatus::Deleted]);
         $tenant->delete();
