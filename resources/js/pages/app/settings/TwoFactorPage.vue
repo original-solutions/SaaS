@@ -64,7 +64,7 @@
 
                 <!-- QR Code -->
                 <div class="flex justify-center mb-4">
-                    <div class="p-4 bg-white rounded-lg border border-gray-200" v-html="setupData.qr_code"></div>
+                    <img v-if="qrCodeDataUrl" :src="qrCodeDataUrl" alt="2FA QR Code" class="p-4 bg-white rounded-lg border border-gray-200 w-48 h-48" />
                 </div>
 
                 <div class="text-center mb-6">
@@ -119,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notification';
 import { twoFactorApi } from '@/api';
@@ -131,6 +131,10 @@ const authStore = useAuthStore();
 const notifications = useNotificationStore();
 
 const setupData = ref<TwoFactorSetupResponse | null>(null);
+const qrCodeDataUrl = computed(() => {
+    if (!setupData.value?.qr_code) return '';
+    return 'data:image/svg+xml;base64,' + btoa(setupData.value.qr_code);
+});
 const settingUp = ref(false);
 const confirmCode = ref('');
 const confirmError = ref('');
