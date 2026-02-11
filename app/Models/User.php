@@ -4,15 +4,22 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+
+    /**
+     * The guard name for Spatie Permission role/permission checks.
+     */
+    protected string $guard_name = 'api';
 
     /**
      * The attributes that are mass assignable.
@@ -71,6 +78,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function loginEvents(): HasMany
     {
         return $this->hasMany(LoginEvent::class);
+    }
+
+    public function tenants(): BelongsToMany
+    {
+        return $this->belongsToMany(Tenant::class)
+            ->withPivot('role', 'joined_at')
+            ->withTimestamps();
     }
 
     /**

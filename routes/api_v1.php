@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\MagicLinkController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonalAccessTokenController;
+use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,4 +63,11 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/tokens', [PersonalAccessTokenController::class, 'store']);
         Route::delete('/tokens/{token}', [PersonalAccessTokenController::class, 'destroy']);
     });
+
+    // Tenants (no tenant header required — user sees their own tenants)
+    Route::get('/tenants', [TenantController::class, 'index']);
+    Route::post('/tenants', [TenantController::class, 'store']);
+    Route::get('/tenants/{tenant}', [TenantController::class, 'show']);
+    Route::put('/tenants/{tenant}', [TenantController::class, 'update']);
+    Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy']);
 });

@@ -25,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SecurityHeaders::class);
 
         $middleware->statefulApi();
+
+        $middleware->alias([
+            'tenant' => \App\Http\Middleware\ResolveTenant::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
