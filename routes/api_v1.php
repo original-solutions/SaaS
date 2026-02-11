@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\DeviceSessionController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\MagicLinkController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonalAccessTokenController;
 use App\Http\Controllers\Api\V1\TenantController;
@@ -88,4 +89,13 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/invitations/{token}/accept', [InvitationController::class, 'accept'])
         ->name('invitations.accept');
     Route::post('/invitations/{token}/decline', [InvitationController::class, 'decline']);
+
+    // Notifications
+    Route::prefix('notifications')->group(function (): void {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::post('/{notification}/read', [NotificationController::class, 'markRead']);
+        Route::post('/read-all', [NotificationController::class, 'markAllRead']);
+        Route::get('/preferences', [NotificationController::class, 'preferences']);
+        Route::put('/preferences', [NotificationController::class, 'updatePreference']);
+    });
 });
