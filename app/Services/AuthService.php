@@ -16,7 +16,7 @@ class AuthService
     /**
      * Attempt login with credentials.
      *
-     * @return array{access_token: string, refresh_token: string, expires_in: int}|null
+     * @return array{access_token: string, refresh_token: string, expires_in: int}|array{error: string}|null
      */
     public function login(string $email, string $password, ?string $ip = null, ?string $userAgent = null): ?array
     {
@@ -33,7 +33,7 @@ class AuthService
                 'reason' => 'account_locked',
             ]);
 
-            return null;
+            return ['error' => 'ACCOUNT_LOCKED'];
         }
 
         // Create device session
@@ -114,7 +114,7 @@ class AuthService
     /**
      * Revoke all sessions and tokens for a user.
      */
-    public function revokeAllForUser(User $user, RevocationReason $reason): void
+    public function revokeAllForUser(User $user, RevocationReason $reason = RevocationReason::AdminRevoked): void
     {
         $user->deviceSessions()->active()->each(fn (DeviceSession $session) => $session->revoke($reason));
         $user->tokens()->delete();

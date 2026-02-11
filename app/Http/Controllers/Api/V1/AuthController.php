@@ -32,6 +32,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (isset($tokens['error']) && $tokens['error'] === 'ACCOUNT_LOCKED') {
+            return response()->json([
+                'message' => 'Account is locked.',
+                'error' => 'ACCOUNT_LOCKED',
+            ], 403);
+        }
+
         return response()->json($tokens);
     }
 

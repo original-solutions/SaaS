@@ -42,7 +42,7 @@ it('returns 401 for non-existent user', function (): void {
     $response->assertUnauthorized();
 });
 
-it('returns 401 for locked user', function (): void {
+it('returns 403 for locked user', function (): void {
     $locked = User::factory()->locked()->create([
         'password' => 'password',
     ]);
@@ -52,7 +52,8 @@ it('returns 401 for locked user', function (): void {
         'password' => 'password',
     ]);
 
-    $response->assertUnauthorized();
+    $response->assertForbidden()
+        ->assertJsonPath('error', 'ACCOUNT_LOCKED');
 });
 
 it('creates a device session on login', function (): void {

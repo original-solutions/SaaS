@@ -3,11 +3,13 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DeviceSessionController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
+use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\MagicLinkController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonalAccessTokenController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\TwoFactorController;
+use App\Http\Controllers\Api\V1\UserAccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +31,9 @@ Route::prefix('auth')->group(function (): void {
     Route::post('/magic-link', [MagicLinkController::class, 'request']);
     Route::post('/magic-link/verify', [MagicLinkController::class, 'verify']);
 });
+
+// Public invitation view (no auth required to view details)
+Route::get('/invitations/{token}', [InvitationController::class, 'show']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function (): void {
@@ -52,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function (): void {
     // Account management
     Route::prefix('account')->group(function (): void {
         Route::put('/password', [AuthController::class, 'changePassword']);
+        Route::get('/export', [UserAccountController::class, 'export']);
+        Route::delete('/', [UserAccountController::class, 'destroy']);
+        Route::put('/email', [UserAccountController::class, 'changeEmail']);
 
         // Device sessions
         Route::get('/sessions', [DeviceSessionController::class, 'index']);
@@ -70,4 +78,14 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('/tenants/{tenant}', [TenantController::class, 'show']);
     Route::put('/tenants/{tenant}', [TenantController::class, 'update']);
     Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy']);
+
+    // Tenant invitations
+    Route::post('/tenants/{tenant}/invitations', [InvitationController::class, 'store']);
+    Route::post('/tenants/{tenant}/invitations/{invitation}/resend', [InvitationController::class, 'resend']);
+    Route::put('/tenants/{tenant}/invitations/{invitation}', [InvitationController::class, 'updateRole']);
+
+    // Accept/decline invitations (authenticated, any user)
+    Route::post('/invitations/{token}/accept', [InvitationController::class, 'accept'])
+        ->name('invitations.accept');
+    Route::post('/invitations/{token}/decline', [InvitationController::class, 'decline']);
 });

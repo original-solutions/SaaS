@@ -35,6 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_recovery_codes',
         'last_login_at',
         'locked_at',
+        'email_verified_at',
     ];
 
     /**

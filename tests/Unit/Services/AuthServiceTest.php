@@ -23,12 +23,12 @@ it('login returns null for invalid credentials', function (): void {
     expect($result)->toBeNull();
 });
 
-it('login returns null for locked user', function (): void {
+it('login returns error for locked user', function (): void {
     $locked = User::factory()->locked()->create(['password' => 'password']);
 
     $result = $this->authService->login($locked->email, 'password', '127.0.0.1', 'Agent');
 
-    expect($result)->toBeNull();
+    expect($result)->toBe(['error' => 'ACCOUNT_LOCKED']);
 });
 
 it('refresh returns new token pair', function (): void {
