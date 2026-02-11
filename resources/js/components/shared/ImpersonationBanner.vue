@@ -1,11 +1,17 @@
 <template>
     <Teleport to="body">
-        <div v-if="authStore.isImpersonating" class="fixed top-0 inset-x-0 z-50 bg-amber-600 text-amber-950 text-center py-2 px-4 text-sm font-medium flex items-center justify-center gap-4">
+        <div
+            v-if="authStore.isImpersonating"
+            class="fixed top-0 inset-x-0 z-50 bg-amber-600 text-amber-950 text-center py-2 px-4 text-sm font-medium flex items-center justify-center gap-4"
+        >
             <span>
                 You are impersonating <strong>{{ authStore.user?.name }}</strong>
                 <template v-if="timeRemaining"> &middot; {{ timeRemaining }} remaining</template>
             </span>
-            <button @click="stopImpersonation" class="px-3 py-1 bg-amber-800 text-white rounded-md text-xs hover:bg-amber-900">
+            <button
+                @click="stopImpersonation"
+                class="px-3 py-1 bg-amber-800 text-white rounded-md text-xs hover:bg-amber-900"
+            >
                 Stop Impersonating
             </button>
         </div>
@@ -46,7 +52,9 @@ async function stopImpersonation(): Promise<void> {
 }
 
 onMounted(() => {
-    interval = setInterval(() => { now.value = Date.now(); }, 1000);
+    interval = setInterval(() => {
+        now.value = Date.now();
+    }, 1000);
 });
 
 onUnmounted(() => {

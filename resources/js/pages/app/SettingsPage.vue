@@ -7,8 +7,19 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Profile</h2>
                 <form @submit.prevent="updateProfile" class="space-y-4 max-w-md">
-                    <BaseInput v-model="profile.name" label="Name" id="name" :error="profileErrors.name" />
-                    <BaseInput v-model="profile.email" label="Email" type="email" id="profile-email" disabled />
+                    <BaseInput
+                        v-model="profile.name"
+                        label="Name"
+                        id="name"
+                        :error="profileErrors.name"
+                    />
+                    <BaseInput
+                        v-model="profile.email"
+                        label="Email"
+                        type="email"
+                        id="profile-email"
+                        disabled
+                    />
                     <BaseButton type="submit" variant="primary" :loading="profileLoading" size="sm">
                         Save
                     </BaseButton>
@@ -19,11 +30,35 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h2>
                 <form @submit.prevent="changePassword" class="space-y-4 max-w-md">
-                    <BaseInput v-model="passwords.current_password" label="Current Password" type="password" id="current-password" :error="passwordErrors.current_password" />
-                    <BaseInput v-model="passwords.password" label="New Password" type="password" id="new-password" :error="passwordErrors.password" />
-                    <BaseInput v-model="passwords.password_confirmation" label="Confirm Password" type="password" id="confirm-password" />
-                    <p v-if="passwordSuccess" class="text-sm text-green-600">Password updated successfully.</p>
-                    <BaseButton type="submit" variant="primary" :loading="passwordLoading" size="sm">
+                    <BaseInput
+                        v-model="passwords.current_password"
+                        label="Current Password"
+                        type="password"
+                        id="current-password"
+                        :error="passwordErrors.current_password"
+                    />
+                    <BaseInput
+                        v-model="passwords.password"
+                        label="New Password"
+                        type="password"
+                        id="new-password"
+                        :error="passwordErrors.password"
+                    />
+                    <BaseInput
+                        v-model="passwords.password_confirmation"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirm-password"
+                    />
+                    <p v-if="passwordSuccess" class="text-sm text-green-600">
+                        Password updated successfully.
+                    </p>
+                    <BaseButton
+                        type="submit"
+                        variant="primary"
+                        :loading="passwordLoading"
+                        size="sm"
+                    >
                         Update Password
                     </BaseButton>
                 </form>
@@ -33,9 +68,23 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Change Email</h2>
                 <form @submit.prevent="changeEmail" class="space-y-4 max-w-md">
-                    <BaseInput v-model="emailForm.email" label="New Email" type="email" id="new-email" :error="emailErrors.email" />
-                    <BaseInput v-model="emailForm.password" label="Current Password" type="password" id="email-password" :error="emailErrors.password" />
-                    <p v-if="emailSuccess" class="text-sm text-green-600">Email updated. Please check your inbox for verification.</p>
+                    <BaseInput
+                        v-model="emailForm.email"
+                        label="New Email"
+                        type="email"
+                        id="new-email"
+                        :error="emailErrors.email"
+                    />
+                    <BaseInput
+                        v-model="emailForm.password"
+                        label="Current Password"
+                        type="password"
+                        id="email-password"
+                        :error="emailErrors.password"
+                    />
+                    <p v-if="emailSuccess" class="text-sm text-green-600">
+                        Email updated. Please check your inbox for verification.
+                    </p>
                     <BaseButton type="submit" variant="primary" :loading="emailLoading" size="sm">
                         Update Email
                     </BaseButton>
@@ -46,17 +95,31 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Security</h2>
                 <div class="space-y-3">
-                    <router-link to="/settings/two-factor" class="flex items-center justify-between py-2 text-sm group">
-                        <span class="text-gray-700 group-hover:text-gray-900">Two-Factor Authentication</span>
-                        <span :class="authStore.hasTwoFactor ? 'text-green-600' : 'text-gray-400'" class="text-xs font-medium">
+                    <router-link
+                        to="/settings/two-factor"
+                        class="flex items-center justify-between py-2 text-sm group"
+                    >
+                        <span class="text-gray-700 group-hover:text-gray-900"
+                            >Two-Factor Authentication</span
+                        >
+                        <span
+                            :class="authStore.hasTwoFactor ? 'text-green-600' : 'text-gray-400'"
+                            class="text-xs font-medium"
+                        >
                             {{ authStore.hasTwoFactor ? 'Enabled' : 'Disabled' }}
                         </span>
                     </router-link>
-                    <router-link to="/settings/sessions" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-gray-900">
+                    <router-link
+                        to="/settings/sessions"
+                        class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-gray-900"
+                    >
                         <span>Device Sessions</span>
                         <span class="text-gray-400">&rarr;</span>
                     </router-link>
-                    <router-link to="/settings/tokens" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-gray-900">
+                    <router-link
+                        to="/settings/tokens"
+                        class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-gray-900"
+                    >
                         <span>Personal Access Tokens</span>
                         <span class="text-gray-400">&rarr;</span>
                     </router-link>
@@ -66,9 +129,16 @@
             <!-- Danger Zone -->
             <div class="bg-white rounded-lg shadow-sm border border-red-200 p-6">
                 <h2 class="text-lg font-semibold text-red-700 mb-2">Danger Zone</h2>
-                <p class="text-sm text-gray-600 mb-4">Once you delete your account, there is no going back.</p>
+                <p class="text-sm text-gray-600 mb-4">
+                    Once you delete your account, there is no going back.
+                </p>
                 <div class="flex gap-3">
-                    <BaseButton variant="secondary" size="sm" @click="exportData" :loading="exportLoading">
+                    <BaseButton
+                        variant="secondary"
+                        size="sm"
+                        @click="exportData"
+                        :loading="exportLoading"
+                    >
                         Export My Data
                     </BaseButton>
                     <BaseButton variant="danger" size="sm" @click="showDeleteConfirm = true">
@@ -77,11 +147,26 @@
                 </div>
 
                 <!-- Delete confirmation -->
-                <div v-if="showDeleteConfirm" class="mt-4 p-4 border border-red-200 rounded-md bg-red-50">
-                    <p class="text-sm text-red-800 mb-3">Type your password to confirm account deletion:</p>
+                <div
+                    v-if="showDeleteConfirm"
+                    class="mt-4 p-4 border border-red-200 rounded-md bg-red-50"
+                >
+                    <p class="text-sm text-red-800 mb-3">
+                        Type your password to confirm account deletion:
+                    </p>
                     <div class="flex gap-2 items-end max-w-sm">
-                        <BaseInput v-model="deletePassword" type="password" placeholder="Password" id="delete-password" />
-                        <BaseButton variant="danger" size="sm" :loading="deleteLoading" @click="deleteAccount">
+                        <BaseInput
+                            v-model="deletePassword"
+                            type="password"
+                            placeholder="Password"
+                            id="delete-password"
+                        />
+                        <BaseButton
+                            variant="danger"
+                            size="sm"
+                            :loading="deleteLoading"
+                            @click="deleteAccount"
+                        >
                             Confirm
                         </BaseButton>
                         <BaseButton variant="ghost" size="sm" @click="showDeleteConfirm = false">
@@ -153,9 +238,12 @@ async function changePassword(): Promise<void> {
     } catch (err) {
         const axiosError = err as AxiosError<ApiError>;
         if (axiosError.response?.data?.errors) {
-            Object.assign(passwordErrors, Object.fromEntries(
-                Object.entries(axiosError.response.data.errors).map(([k, v]) => [k, v[0]])
-            ));
+            Object.assign(
+                passwordErrors,
+                Object.fromEntries(
+                    Object.entries(axiosError.response.data.errors).map(([k, v]) => [k, v[0]]),
+                ),
+            );
         }
     } finally {
         passwordLoading.value = false;
@@ -181,9 +269,12 @@ async function changeEmail(): Promise<void> {
     } catch (err) {
         const axiosError = err as AxiosError<ApiError>;
         if (axiosError.response?.data?.errors) {
-            Object.assign(emailErrors, Object.fromEntries(
-                Object.entries(axiosError.response.data.errors).map(([k, v]) => [k, v[0]])
-            ));
+            Object.assign(
+                emailErrors,
+                Object.fromEntries(
+                    Object.entries(axiosError.response.data.errors).map(([k, v]) => [k, v[0]]),
+                ),
+            );
         }
     } finally {
         emailLoading.value = false;

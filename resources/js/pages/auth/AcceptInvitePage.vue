@@ -2,7 +2,9 @@
     <GuestLayout>
         <template v-if="isLoading">
             <div class="text-center py-8">
-                <div class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"></div>
+                <div
+                    class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"
+                ></div>
                 <p class="mt-3 text-sm text-gray-600">Loading invitation details...</p>
             </div>
         </template>
@@ -12,21 +14,28 @@
                 <p class="text-sm text-red-800">{{ error }}</p>
             </div>
             <div class="text-center">
-                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">Go to sign in</router-link>
+                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900"
+                    >Go to sign in</router-link
+                >
             </div>
         </template>
 
         <template v-else-if="invitation">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">You're Invited</h2>
             <p class="text-sm text-gray-600 mb-6">
-                You've been invited to join a workspace as <strong>{{ invitation.role }}</strong>.
+                You've been invited to join a workspace as <strong>{{ invitation.role }}</strong
+                >.
             </p>
 
             <!-- Email mismatch warning -->
-            <div v-if="emailMismatch" class="rounded-md bg-amber-50 border border-amber-200 p-4 mb-4">
+            <div
+                v-if="emailMismatch"
+                class="rounded-md bg-amber-50 border border-amber-200 p-4 mb-4"
+            >
                 <p class="text-sm text-amber-800 mb-3">
-                    This invitation was sent to <strong>{{ invitation.email }}</strong>, but you're signed in as
-                    <strong>{{ auth.user?.email }}</strong>.
+                    This invitation was sent to <strong>{{ invitation.email }}</strong
+                    >, but you're signed in as <strong>{{ auth.user?.email }}</strong
+                    >.
                 </p>
                 <div class="flex gap-2">
                     <BaseButton variant="secondary" size="sm" @click="switchAccount">
@@ -112,7 +121,8 @@ async function loadInvitation(): Promise<void> {
         invitation.value = data.data;
     } catch (err) {
         const axiosError = err as AxiosError<ApiError>;
-        error.value = axiosError.response?.data?.message ?? 'This invitation is invalid or has expired.';
+        error.value =
+            axiosError.response?.data?.message ?? 'This invitation is invalid or has expired.';
     } finally {
         isLoading.value = false;
     }

@@ -17,7 +17,9 @@
             <button
                 :class="[
                     'px-3 py-1.5 text-xs font-medium rounded-full border whitespace-nowrap transition-colors',
-                    !activeViewId ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400',
+                    !activeViewId
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400',
                 ]"
                 @click="clearView"
             >
@@ -28,7 +30,9 @@
                 :key="view.id"
                 :class="[
                     'px-3 py-1.5 text-xs font-medium rounded-full border whitespace-nowrap transition-colors',
-                    activeViewId === view.id ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400',
+                    activeViewId === view.id
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400',
                 ]"
                 @click="applyView(view)"
             >
@@ -44,11 +48,24 @@
         </div>
 
         <!-- Save View Modal -->
-        <div v-if="showSaveView" class="mb-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div
+            v-if="showSaveView"
+            class="mb-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+        >
             <form @submit.prevent="saveView" class="flex items-end gap-3">
-                <BaseInput v-model="newViewName" label="View Name" placeholder="e.g. Active VIPs" id="view-name" class="flex-1 max-w-xs" />
-                <BaseButton type="submit" variant="primary" size="sm" :loading="savingView">Save</BaseButton>
-                <BaseButton variant="ghost" size="sm" @click="showSaveView = false">Cancel</BaseButton>
+                <BaseInput
+                    v-model="newViewName"
+                    label="View Name"
+                    placeholder="e.g. Active VIPs"
+                    id="view-name"
+                    class="flex-1 max-w-xs"
+                />
+                <BaseButton type="submit" variant="primary" size="sm" :loading="savingView"
+                    >Save</BaseButton
+                >
+                <BaseButton variant="ghost" size="sm" @click="showSaveView = false"
+                    >Cancel</BaseButton
+                >
             </form>
         </div>
 
@@ -99,43 +116,92 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none" @click="sortBy('name')">
-                            Name <span v-if="sortField === 'name'" class="text-gray-400">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none"
+                            @click="sortBy('name')"
+                        >
+                            Name
+                            <span v-if="sortField === 'name'" class="text-gray-400">{{
+                                sortDir === 'asc' ? '↑' : '↓'
+                            }}</span>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none" @click="sortBy('email')">
-                            Email <span v-if="sortField === 'email'" class="text-gray-400">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none"
+                            @click="sortBy('email')"
+                        >
+                            Email
+                            <span v-if="sortField === 'email'" class="text-gray-400">{{
+                                sortDir === 'asc' ? '↑' : '↓'
+                            }}</span>
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none" @click="sortBy('status')">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                            Company
+                        </th>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none"
+                            @click="sortBy('status')"
+                        >
                             Status
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none" @click="sortBy('created_at')">
-                            Created <span v-if="sortField === 'created_at'" class="text-gray-400">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none"
+                            @click="sortBy('created_at')"
+                        >
+                            Created
+                            <span v-if="sortField === 'created_at'" class="text-gray-400">{{
+                                sortDir === 'asc' ? '↑' : '↓'
+                            }}</span>
                         </th>
                         <th class="px-6 py-3"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <tr v-if="isLoading">
-                        <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">Loading...</td>
+                        <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">
+                            Loading...
+                        </td>
                     </tr>
                     <tr v-else-if="customers.length === 0">
-                        <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">No customers found.</td>
+                        <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">
+                            No customers found.
+                        </td>
                     </tr>
                     <tr v-for="customer in customers" :key="customer.id" class="hover:bg-gray-50">
                         <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                            <router-link :to="`/customers/${customer.id}`" class="hover:underline">{{ customer.name }}</router-link>
+                            <router-link
+                                :to="`/customers/${customer.id}`"
+                                class="hover:underline"
+                                >{{ customer.name }}</router-link
+                            >
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ customer.email ?? '—' }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ customer.company ?? '—' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ customer.company ?? '—' }}
+                        </td>
                         <td class="px-6 py-4">
-                            <span :class="['inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', customer.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800']">
+                            <span
+                                :class="[
+                                    'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                                    customer.status === 'active'
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-100 text-gray-800',
+                                ]"
+                            >
                                 {{ customer.status }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ formatDate(customer.created_at) }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ formatDate(customer.created_at) }}
+                        </td>
                         <td class="px-6 py-4 text-right">
-                            <router-link v-if="tenantStore.canWrite" :to="`/customers/${customer.id}/edit`" class="text-sm text-gray-600 hover:text-gray-900">Edit</router-link>
+                            <router-link
+                                v-if="tenantStore.canWrite"
+                                :to="`/customers/${customer.id}/edit`"
+                                class="text-sm text-gray-600 hover:text-gray-900"
+                                >Edit</router-link
+                            >
                         </td>
                     </tr>
                 </tbody>
@@ -148,8 +214,20 @@
                 Showing {{ pagination.from }}–{{ pagination.to }} of {{ pagination.total }}
             </span>
             <div class="flex gap-2">
-                <button :disabled="pagination.currentPage <= 1" @click="fetchCustomers(pagination.currentPage - 1)" class="px-3 py-1 text-sm border rounded-md disabled:opacity-50">Previous</button>
-                <button :disabled="pagination.currentPage >= pagination.lastPage" @click="fetchCustomers(pagination.currentPage + 1)" class="px-3 py-1 text-sm border rounded-md disabled:opacity-50">Next</button>
+                <button
+                    :disabled="pagination.currentPage <= 1"
+                    @click="fetchCustomers(pagination.currentPage - 1)"
+                    class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                >
+                    Previous
+                </button>
+                <button
+                    :disabled="pagination.currentPage >= pagination.lastPage"
+                    @click="fetchCustomers(pagination.currentPage + 1)"
+                    class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                >
+                    Next
+                </button>
             </div>
         </div>
     </div>
@@ -192,7 +270,11 @@ const pagination = reactive({
 });
 
 function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 function sortBy(field: string): void {

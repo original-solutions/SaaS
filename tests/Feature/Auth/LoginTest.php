@@ -21,6 +21,8 @@ it('returns token pair on successful login', function (): void {
             'access_token',
             'refresh_token',
             'expires_in',
+            'user' => ['id', 'name', 'email'],
+            'tenants',
         ]);
 });
 

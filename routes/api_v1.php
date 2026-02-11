@@ -49,6 +49,11 @@ Route::post('/webhooks/stripe', StripeWebhookController::class);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function (): void {
+    // Activity log for a subject (e.g., customer)
+    Route::get('/activity', [\App\Http\Controllers\Api\V1\ActivityController::class, 'index']);
+
+    // Files for a fileable model (list)
+    Route::get('/files', [\App\Http\Controllers\Api\V1\FileController::class, 'index']);
     // Auth
     Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('throttle:auth-logout');
     Route::get('/me', [AuthController::class, 'me']);

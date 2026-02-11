@@ -1,16 +1,21 @@
 <template>
     <GuestLayout>
         <h2 class="text-lg font-semibold text-gray-900 mb-2">Magic Link Sign In</h2>
-        <p class="text-sm text-gray-600 mb-6">Enter your email and we'll send you a sign-in link.</p>
+        <p class="text-sm text-gray-600 mb-6">
+            Enter your email and we'll send you a sign-in link.
+        </p>
 
         <template v-if="sent">
             <div class="rounded-md bg-green-50 p-4">
                 <p class="text-sm text-green-800">
-                    A magic link has been sent to <strong>{{ email }}</strong>. Check your inbox and click the link to sign in.
+                    A magic link has been sent to <strong>{{ email }}</strong
+                    >. Check your inbox and click the link to sign in.
                 </p>
             </div>
             <div class="mt-4 text-center">
-                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">Back to sign in</router-link>
+                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900"
+                    >Back to sign in</router-link
+                >
             </div>
         </template>
 
@@ -29,7 +34,9 @@
             </BaseButton>
 
             <div class="text-center">
-                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">Back to sign in</router-link>
+                <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900"
+                    >Back to sign in</router-link
+                >
             </div>
         </form>
     </GuestLayout>
@@ -58,9 +65,10 @@ async function handleSubmit(): Promise<void> {
         sent.value = true;
     } catch (err) {
         const axiosError = err as AxiosError<ApiError>;
-        error.value = axiosError.response?.data?.errors?.email?.[0]
-            ?? axiosError.response?.data?.message
-            ?? 'An error occurred.';
+        error.value =
+            axiosError.response?.data?.errors?.email?.[0] ??
+            axiosError.response?.data?.message ??
+            'An error occurred.';
     } finally {
         isLoading.value = false;
     }

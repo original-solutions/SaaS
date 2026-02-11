@@ -57,16 +57,18 @@ export function useRealtime() {
                     onlineMembers.value.push(member);
                 })
                 .leaving((member: OnlineMember) => {
-                    onlineMembers.value = onlineMembers.value.filter(m => m.id !== member.id);
+                    onlineMembers.value = onlineMembers.value.filter((m) => m.id !== member.id);
                 });
         }
 
         if (userId) {
             // User channel — personal notifications
-            subscribeUserChannel(userId)
-                .listen('.UserNotification', (data: { type?: string; message?: string }) => {
+            subscribeUserChannel(userId).listen(
+                '.UserNotification',
+                (data: { type?: string; message?: string }) => {
                     notifications.info(data.message ?? 'You have a new notification.');
-                });
+                },
+            );
         }
     }
 

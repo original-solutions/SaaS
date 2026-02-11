@@ -29,10 +29,10 @@ aws s3 sync storage/app/ s3://your-bucket/backups/storage/
 
 ## Recovery Objectives
 
-| Metric | Target |
-|--------|--------|
-| RPO (Recovery Point Objective) | 1 hour |
-| RTO (Recovery Time Objective) | 30 minutes |
+| Metric                         | Target     |
+| ------------------------------ | ---------- |
+| RPO (Recovery Point Objective) | 1 hour     |
+| RTO (Recovery Time Objective)  | 30 minutes |
 
 ## Restore Procedure
 

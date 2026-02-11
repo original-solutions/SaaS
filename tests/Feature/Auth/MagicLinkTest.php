@@ -46,7 +46,7 @@ it('verifies valid magic link token', function (): void {
     ]);
 
     $response->assertSuccessful()
-        ->assertJsonStructure(['access_token', 'refresh_token', 'expires_in']);
+        ->assertJsonStructure(['access_token', 'refresh_token', 'expires_in', 'user', 'tenants']);
 });
 
 it('creates device session on magic link login', function (): void {

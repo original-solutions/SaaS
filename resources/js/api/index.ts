@@ -365,7 +365,10 @@ export const tokenApi = {
     },
 
     create(data: { name: string; abilities?: string[] }) {
-        return api.post<ApiResponse<{ token: string; accessToken: PersonalAccessToken }>>('/tokens', data);
+        return api.post<ApiResponse<{ token: string; accessToken: PersonalAccessToken }>>(
+            '/tokens',
+            data,
+        );
     },
 
     revoke(id: number) {
@@ -395,91 +398,105 @@ export const invitePublicApi = {
 
 // ─── Admin ──────────────────────────────────────────
 
-const adminApi = api.create?.({ baseURL: '/admin/api/v1' }) ?? api;
+let adminApi = api;
+if (api.create) {
+    adminApi = api.create({ baseURL: '/admin/api/v1' });
+    // Copy interceptors from api to adminApi
+    api.interceptors.request.forEach((handler) => {
+        adminApi.interceptors.request.use(handler.fulfilled, handler.rejected);
+    });
+    api.interceptors.response.forEach((handler) => {
+        adminApi.interceptors.response.use(handler.fulfilled, handler.rejected);
+    });
+}
 
 export const adminTenantsApi = {
     list(params?: Record<string, unknown>) {
-        return api.get<PaginatedResponse<AdminTenantDetail>>('/admin/tenants', { params });
+        return adminApi.get<PaginatedResponse<AdminTenantDetail>>('/tenants', { params });
     },
 
     show(id: number) {
-        return api.get<ApiResponse<AdminTenantDetail>>(`/admin/tenants/${id}`);
+        return adminApi.get<ApiResponse<AdminTenantDetail>>(`/tenants/${id}`);
     },
 
     disable(id: number) {
-        return api.post(`/admin/tenants/${id}/disable`);
+        return adminApi.post(`/tenants/${id}/disable`);
     },
 
     enable(id: number) {
-        return api.post(`/admin/tenants/${id}/enable`);
+        return adminApi.post(`/tenants/${id}/enable`);
     },
 
     members(id: number) {
-        return api.get<ApiResponse<User[]>>(`/admin/tenants/${id}/members`);
+        return adminApi.get<ApiResponse<User[]>>(`/tenants/${id}/members`);
     },
 };
 
 export const adminUsersApi = {
     list(params?: Record<string, unknown>) {
-        return api.get<PaginatedResponse<AdminUserDetail>>('/admin/users', { params });
+        return adminApi.get<PaginatedResponse<AdminUserDetail>>('/users', { params });
     },
 
     show(id: number) {
-        return api.get<ApiResponse<AdminUserDetail>>(`/admin/users/${id}`);
+        return adminApi.get<ApiResponse<AdminUserDetail>>(`/users/${id}`);
     },
 
     lock(id: number) {
-        return api.post(`/admin/users/${id}/lock`);
+        return adminApi.post(`/users/${id}/lock`);
     },
 
     unlock(id: number) {
-        return api.post(`/admin/users/${id}/unlock`);
+        return adminApi.post(`/users/${id}/unlock`);
     },
 
     impersonate(id: number) {
-        return api.post<ApiResponse<{ access_token: string; expires_at: string }>>(`/admin/users/${id}/impersonate`);
+        return adminApi.post<ApiResponse<{ access_token: string; expires_at: string }>>(
+            `/impersonate/${id}/start`,
+        );
     },
 
-    stopImpersonation() {
-        return api.post('/admin/impersonation/stop');
+    stopImpersonation(userId: number) {
+        return adminApi.post(`/impersonate/${userId}/stop`);
     },
 };
 
 export const adminJobsApi = {
     list(params?: Record<string, unknown>) {
-        return api.get<PaginatedResponse<Record<string, unknown>>>('/admin/jobs', { params });
+        return adminApi.get<PaginatedResponse<Record<string, unknown>>>('/jobs', { params });
     },
 
     failedJobs(params?: Record<string, unknown>) {
-        return api.get<PaginatedResponse<Record<string, unknown>>>('/admin/jobs/failed', { params });
+        return adminApi.get<PaginatedResponse<Record<string, unknown>>>('/jobs/failed', { params });
     },
 
     retry(id: number) {
-        return api.post(`/admin/jobs/failed/${id}/retry`);
+        return adminApi.post(`/jobs/failed/${id}/retry`);
     },
 
     retryAll() {
-        return api.post('/admin/jobs/failed/retry-all');
+        return adminApi.post('/jobs/failed/retry-all');
     },
 };
 
 export const adminAuditApi = {
     list(params?: Record<string, unknown>) {
-        return api.get<PaginatedResponse<Activity>>('/admin/audit', { params });
+        return adminApi.get<PaginatedResponse<Activity>>('/audit', { params });
     },
 };
 
 export const adminHealthApi = {
     check() {
-        return api.get<ApiResponse<HealthCheck[]>>('/admin/health');
+        return adminApi.get<ApiResponse<HealthCheck[]>>('/health');
     },
 };
 
 export const adminSearchApi = {
     search(query: string) {
-        return api.get<ApiResponse<{
-            tenants: Tenant[];
-            users: User[];
-        }>>('/admin/search', { params: { q: query } });
+        return adminApi.get<
+            ApiResponse<{
+                tenants: Tenant[];
+                users: User[];
+            }>
+        >('/search', { params: { q: query } });
     },
 };

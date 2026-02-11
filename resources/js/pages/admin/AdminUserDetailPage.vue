@@ -1,6 +1,10 @@
 <template>
     <div>
-        <router-link to="/admin/users" class="text-sm text-gray-400 hover:text-gray-300 mb-4 inline-block">&larr; Back to users</router-link>
+        <router-link
+            to="/admin/users"
+            class="text-sm text-gray-400 hover:text-gray-300 mb-4 inline-block"
+            >&larr; Back to users</router-link
+        >
 
         <div v-if="isLoading" class="text-gray-400 py-8 text-center">Loading...</div>
 
@@ -11,9 +15,26 @@
                     <p class="text-sm text-gray-400">{{ user.email }}</p>
                 </div>
                 <div class="flex gap-2">
-                    <button v-if="user.locked_at" @click="unlock" class="px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded-md">Unlock</button>
-                    <button v-else @click="lock" class="px-3 py-1.5 text-sm bg-red-600 hover:bg-red-700 text-white rounded-md">Lock</button>
-                    <button @click="impersonate" class="px-3 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-md">Impersonate</button>
+                    <button
+                        v-if="user.locked_at"
+                        @click="unlock"
+                        class="px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded-md"
+                    >
+                        Unlock
+                    </button>
+                    <button
+                        v-else
+                        @click="lock"
+                        class="px-3 py-1.5 text-sm bg-red-600 hover:bg-red-700 text-white rounded-md"
+                    >
+                        Lock
+                    </button>
+                    <button
+                        @click="impersonate"
+                        class="px-3 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+                    >
+                        Impersonate
+                    </button>
                 </div>
             </div>
 
@@ -26,13 +47,17 @@
                             <div>
                                 <dt class="text-gray-400">Status</dt>
                                 <dd class="text-white mt-1">
-                                    <span v-if="user.locked_at" class="text-red-400">Locked since {{ formatDate(user.locked_at) }}</span>
+                                    <span v-if="user.locked_at" class="text-red-400"
+                                        >Locked since {{ formatDate(user.locked_at) }}</span
+                                    >
                                     <span v-else class="text-green-400">Active</span>
                                 </dd>
                             </div>
                             <div>
                                 <dt class="text-gray-400">Super Admin</dt>
-                                <dd class="text-white mt-1">{{ user.is_super_admin ? 'Yes' : 'No' }}</dd>
+                                <dd class="text-white mt-1">
+                                    {{ user.is_super_admin ? 'Yes' : 'No' }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-gray-400">Created</dt>
@@ -40,11 +65,19 @@
                             </div>
                             <div>
                                 <dt class="text-gray-400">Email Verified</dt>
-                                <dd class="text-white mt-1">{{ user.email_verified_at ? formatDate(user.email_verified_at) : 'No' }}</dd>
+                                <dd class="text-white mt-1">
+                                    {{
+                                        user.email_verified_at
+                                            ? formatDate(user.email_verified_at)
+                                            : 'No'
+                                    }}
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-gray-400">Two-Factor</dt>
-                                <dd class="text-white mt-1">{{ user.two_factor_confirmed_at ? 'Enabled' : 'Disabled' }}</dd>
+                                <dd class="text-white mt-1">
+                                    {{ user.two_factor_confirmed_at ? 'Enabled' : 'Disabled' }}
+                                </dd>
                             </div>
                         </dl>
                     </div>
@@ -52,10 +85,21 @@
                     <!-- Memberships -->
                     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
                         <h2 class="text-lg font-semibold text-white mb-4">Tenant Memberships</h2>
-                        <div v-if="user.memberships && user.memberships.length > 0" class="space-y-2">
-                            <div v-for="m in user.memberships" :key="m.tenant_id" class="flex items-center justify-between py-2 border-b border-gray-700 last:border-0">
+                        <div
+                            v-if="user.memberships && user.memberships.length > 0"
+                            class="space-y-2"
+                        >
+                            <div
+                                v-for="m in user.memberships"
+                                :key="m.tenant_id"
+                                class="flex items-center justify-between py-2 border-b border-gray-700 last:border-0"
+                            >
                                 <div>
-                                    <router-link :to="`/admin/tenants/${m.tenant_id}`" class="text-sm text-white hover:underline">{{ m.tenant_name }}</router-link>
+                                    <router-link
+                                        :to="`/admin/tenants/${m.tenant_id}`"
+                                        class="text-sm text-white hover:underline"
+                                        >{{ m.tenant_name }}</router-link
+                                    >
                                     <span class="ml-2 text-xs text-gray-400">{{ m.role }}</span>
                                 </div>
                             </div>
@@ -66,13 +110,24 @@
                     <!-- Login History -->
                     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
                         <h2 class="text-lg font-semibold text-white mb-4">Login History</h2>
-                        <div v-if="user.login_events && user.login_events.length > 0" class="space-y-2">
-                            <div v-for="e in user.login_events" :key="e.id" class="flex items-center justify-between py-2 border-b border-gray-700 last:border-0">
+                        <div
+                            v-if="user.login_events && user.login_events.length > 0"
+                            class="space-y-2"
+                        >
+                            <div
+                                v-for="e in user.login_events"
+                                :key="e.id"
+                                class="flex items-center justify-between py-2 border-b border-gray-700 last:border-0"
+                            >
                                 <div>
                                     <span class="text-sm text-white">{{ e.event_type }}</span>
-                                    <span class="ml-2 text-xs text-gray-400">{{ e.ip_address }}</span>
+                                    <span class="ml-2 text-xs text-gray-400">{{
+                                        e.ip_address
+                                    }}</span>
                                 </div>
-                                <span class="text-xs text-gray-400">{{ formatDate(e.created_at) }}</span>
+                                <span class="text-xs text-gray-400">{{
+                                    formatDate(e.created_at)
+                                }}</span>
                             </div>
                         </div>
                         <p v-else class="text-sm text-gray-400">No login events recorded.</p>
@@ -86,15 +141,21 @@
                         <dl class="space-y-3 text-sm">
                             <div class="flex justify-between">
                                 <dt class="text-gray-400">Tenants</dt>
-                                <dd class="text-white font-medium">{{ user.tenants_count ?? 0 }}</dd>
+                                <dd class="text-white font-medium">
+                                    {{ user.tenants_count ?? 0 }}
+                                </dd>
                             </div>
                             <div class="flex justify-between">
                                 <dt class="text-gray-400">Sessions</dt>
-                                <dd class="text-white font-medium">{{ user.sessions_count ?? 0 }}</dd>
+                                <dd class="text-white font-medium">
+                                    {{ user.sessions_count ?? 0 }}
+                                </dd>
                             </div>
                             <div class="flex justify-between">
                                 <dt class="text-gray-400">Login Events</dt>
-                                <dd class="text-white font-medium">{{ user.login_events?.length ?? 0 }}</dd>
+                                <dd class="text-white font-medium">
+                                    {{ user.login_events?.length ?? 0 }}
+                                </dd>
                             </div>
                         </dl>
                     </div>
@@ -121,7 +182,11 @@ const user = ref<AdminUserDetail | null>(null);
 const isLoading = ref(true);
 
 function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 async function fetchUser(): Promise<void> {
@@ -140,7 +205,9 @@ async function lock(): Promise<void> {
         await adminUsersApi.lock(user.value.id);
         user.value.locked_at = new Date().toISOString();
         notifications.success('User locked.');
-    } catch { notifications.error('Failed to lock user.'); }
+    } catch {
+        notifications.error('Failed to lock user.');
+    }
 }
 
 async function unlock(): Promise<void> {
@@ -149,18 +216,22 @@ async function unlock(): Promise<void> {
         await adminUsersApi.unlock(user.value.id);
         user.value.locked_at = null;
         notifications.success('User unlocked.');
-    } catch { notifications.error('Failed to unlock user.'); }
+    } catch {
+        notifications.error('Failed to unlock user.');
+    }
 }
 
 async function impersonate(): Promise<void> {
     if (!user.value) return;
     try {
         const { data } = await adminUsersApi.impersonate(user.value.id);
-        authStore.startImpersonation(data.data.access_token, data.data.expires_at);
+        authStore.startImpersonation(data.token, data.expires_at);
         await authStore.fetchUser();
         notifications.info(`Now impersonating ${user.value.name}.`);
         router.push('/');
-    } catch { notifications.error('Failed to impersonate.'); }
+    } catch {
+        notifications.error('Failed to impersonate.');
+    }
 }
 
 onMounted(() => fetchUser());

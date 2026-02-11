@@ -6,7 +6,8 @@
             <div v-if="isLoading" class="p-6 text-center text-sm text-gray-500">Loading...</div>
 
             <div v-else-if="notes.length === 0" class="p-6 text-center text-sm text-gray-500">
-                No notes yet. Notes will appear here when you add them to customers or other records.
+                No notes yet. Notes will appear here when you add them to customers or other
+                records.
             </div>
 
             <ul v-else class="divide-y divide-gray-200">
@@ -15,17 +16,38 @@
                     <div class="mt-2 flex items-center gap-3 text-xs text-gray-400">
                         <span>{{ formatDate(note.created_at) }}</span>
                         <span class="text-gray-300">|</span>
-                        <span>{{ formatNoteableType(note.noteable_type) }} #{{ note.noteable_id }}</span>
+                        <span
+                            >{{ formatNoteableType(note.noteable_type) }} #{{
+                                note.noteable_id
+                            }}</span
+                        >
                     </div>
                 </li>
             </ul>
 
             <!-- Pagination -->
-            <div v-if="pagination.lastPage > 1" class="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-                <span class="text-xs text-gray-500">Page {{ pagination.currentPage }} of {{ pagination.lastPage }}</span>
+            <div
+                v-if="pagination.lastPage > 1"
+                class="px-4 py-3 border-t border-gray-200 flex items-center justify-between"
+            >
+                <span class="text-xs text-gray-500"
+                    >Page {{ pagination.currentPage }} of {{ pagination.lastPage }}</span
+                >
                 <div class="flex gap-2">
-                    <button :disabled="pagination.currentPage <= 1" @click="loadNotes(pagination.currentPage - 1)" class="px-3 py-1 text-sm border rounded-md disabled:opacity-50">Previous</button>
-                    <button :disabled="pagination.currentPage >= pagination.lastPage" @click="loadNotes(pagination.currentPage + 1)" class="px-3 py-1 text-sm border rounded-md disabled:opacity-50">Next</button>
+                    <button
+                        :disabled="pagination.currentPage <= 1"
+                        @click="loadNotes(pagination.currentPage - 1)"
+                        class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                    >
+                        Previous
+                    </button>
+                    <button
+                        :disabled="pagination.currentPage >= pagination.lastPage"
+                        @click="loadNotes(pagination.currentPage + 1)"
+                        class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
         </div>
@@ -42,7 +64,11 @@ const isLoading = ref(true);
 const pagination = reactive({ currentPage: 1, lastPage: 1 });
 
 function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 function formatNoteableType(type: string): string {

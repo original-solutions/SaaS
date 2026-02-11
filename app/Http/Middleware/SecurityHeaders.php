@@ -37,13 +37,20 @@ class SecurityHeaders
      */
     protected function buildCsp(string $nonce): string
     {
+        $isLocal = app()->environment('local');
+        $viteDevServer = $isLocal
+            ? ' '.config('app.url').':'.env('VITE_PORT', 5173)
+            : '';
+
         $directives = [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}'",
-            "style-src 'self' 'nonce-{$nonce}'",
+            "script-src 'self' 'nonce-{$nonce}'{$viteDevServer}",
+            $isLocal
+                ? "style-src 'self' 'unsafe-inline'{$viteDevServer}"
+                : "style-src 'self' 'nonce-{$nonce}'",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
-            "connect-src 'self' wss:",
+            "connect-src 'self' wss:{$viteDevServer}",
             "frame-ancestors 'none'",
             "base-uri 'self'",
             "form-action 'self'",

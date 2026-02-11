@@ -25,6 +25,9 @@ Route::middleware(['auth:sanctum', 'super-admin'])->group(function (): void {
     // Dashboard
     Route::get('/dashboard', AdminDashboardController::class);
 
+    // Admin audit log
+    Route::get('/audit', [\App\Http\Controllers\Admin\AdminAuditController::class, 'index']);
+
     // Health check
     Route::get('/health', HealthCheckController::class);
 

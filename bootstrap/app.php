@@ -27,8 +27,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SecurityHeaders::class);
         $middleware->append(CorrelationId::class);
 
-        $middleware->statefulApi();
-
         $middleware->alias([
             'tenant' => \App\Http\Middleware\ResolveTenant::class,
             'super-admin' => \App\Http\Middleware\SuperAdminOnly::class,

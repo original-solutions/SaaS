@@ -14,7 +14,7 @@ it('login returns token pair with correct structure', function (): void {
     $result = $this->authService->login($this->user->email, 'password', '127.0.0.1', 'Agent');
 
     expect($result)->not->toBeNull()
-        ->toHaveKeys(['access_token', 'refresh_token', 'expires_in']);
+        ->toHaveKeys(['access_token', 'refresh_token', 'expires_in', 'user', 'tenants']);
 });
 
 it('login returns null for invalid credentials', function (): void {
@@ -36,7 +36,7 @@ it('refresh returns new token pair', function (): void {
     $newTokens = $this->authService->refresh($tokens['refresh_token']);
 
     expect($newTokens)->not->toBeNull()
-        ->toHaveKeys(['access_token', 'refresh_token', 'expires_in']);
+        ->toHaveKeys(['access_token', 'refresh_token', 'expires_in', 'user', 'tenants']);
     expect($newTokens['refresh_token'])->not->toBe($tokens['refresh_token']);
 });
 
@@ -84,6 +84,6 @@ it('revokeAllForUser revokes all sessions', function (): void {
 it('loginViaUser creates session and returns tokens', function (): void {
     $tokens = $this->authService->loginViaUser($this->user, '127.0.0.1', 'Agent');
 
-    expect($tokens)->toHaveKeys(['access_token', 'refresh_token', 'expires_in']);
+    expect($tokens)->toHaveKeys(['access_token', 'refresh_token', 'expires_in', 'user', 'tenants']);
     expect(DeviceSession::where('user_id', $this->user->id)->count())->toBe(1);
 });

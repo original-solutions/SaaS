@@ -43,6 +43,11 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
 
+        // Attach super admin to the demo tenant as owner
+        $tenant->users()->attach($superAdmin, ['role' => 'owner']);
+        setPermissionsTeamId($tenant->id);
+        $superAdmin->assignRole('owner');
+
         // Owner
         $owner = User::factory()->create([
             'name' => 'Jane Owner',

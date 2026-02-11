@@ -10,12 +10,12 @@ Packages related to **authentication**, **cryptography**, or **HTML sanitization
 
 ### Current security-critical dependencies
 
-| Package | Category | Purpose |
-|---------|----------|---------|
-| `laravel/framework` | Auth / Crypto | Core framework with auth, encryption, hashing |
-| `laravel/sanctum` | Auth | API token authentication |
-| `spatie/laravel-permission` | Auth | Role-based access control |
-| `laravel/reverb` | Auth | WebSocket authentication |
+| Package                     | Category      | Purpose                                       |
+| --------------------------- | ------------- | --------------------------------------------- |
+| `laravel/framework`         | Auth / Crypto | Core framework with auth, encryption, hashing |
+| `laravel/sanctum`           | Auth          | API token authentication                      |
+| `spatie/laravel-permission` | Auth          | Role-based access control                     |
+| `laravel/reverb`            | Auth          | WebSocket authentication                      |
 
 ## Auditing
 

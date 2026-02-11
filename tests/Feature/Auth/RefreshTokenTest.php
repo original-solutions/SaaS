@@ -22,7 +22,7 @@ it('rotates tokens on successful refresh', function (): void {
     ]);
 
     $response->assertSuccessful()
-        ->assertJsonStructure(['access_token', 'refresh_token', 'expires_in']);
+        ->assertJsonStructure(['access_token', 'refresh_token', 'expires_in', 'user', 'tenants']);
 
     // New tokens should be different
     expect($response->json('refresh_token'))->not->toBe($this->tokens['refresh_token']);

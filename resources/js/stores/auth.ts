@@ -91,11 +91,13 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function stopImpersonation(): Promise<void> {
         try {
-            await import('@/api').then(m => m.adminUsersApi.stopImpersonation());
-        } finally {
+            if (!user.value) throw new Error('No user to stop impersonating');
+            // Restore original admin token BEFORE calling API
             if (originalToken.value) {
                 localStorage.setItem('access_token', originalToken.value);
             }
+            await import('@/api').then((m) => m.adminUsersApi.stopImpersonation(user.value!.id));
+        } finally {
             originalToken.value = null;
             isImpersonating.value = false;
             impersonationExpiresAt.value = null;

@@ -148,7 +148,7 @@ class AuthService
     /**
      * Create an access + refresh token pair.
      *
-     * @return array{access_token: string, refresh_token: string, expires_in: int}
+     * @return array{access_token: string, refresh_token: string, expires_in: int, user: User, tenants: \Illuminate\Support\Collection}
      */
     protected function createTokenPair(User $user, DeviceSession $deviceSession): array
     {
@@ -174,6 +174,13 @@ class AuthService
             'access_token' => $accessToken->plainTextToken,
             'refresh_token' => $refreshTokenPlain,
             'expires_in' => $accessTokenTtl * 60, // seconds
+            'user' => $user,
+            'tenants' => $user->tenants()->get()->map(fn ($t) => [
+                'id' => $t->id,
+                'name' => $t->name,
+                'slug' => $t->slug,
+                'pivot' => ['role' => $t->pivot->role],
+            ]),
         ];
     }
 

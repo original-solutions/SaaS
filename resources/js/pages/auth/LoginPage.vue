@@ -4,7 +4,11 @@
         <template v-if="showTwoFactor">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Two-Factor Authentication</h2>
             <p class="text-sm text-gray-600 mb-6">
-                {{ useRecoveryCode ? 'Enter one of your recovery codes.' : 'Enter the code from your authenticator app.' }}
+                {{
+                    useRecoveryCode
+                        ? 'Enter one of your recovery codes.'
+                        : 'Enter the code from your authenticator app.'
+                }}
             </p>
 
             <form @submit.prevent="handleTwoFactor" class="space-y-4">
@@ -78,16 +82,10 @@
                 </BaseButton>
 
                 <div class="flex items-center justify-between text-sm">
-                    <router-link
-                        to="/forgot-password"
-                        class="text-gray-600 hover:text-gray-900"
-                    >
+                    <router-link to="/forgot-password" class="text-gray-600 hover:text-gray-900">
                         Forgot password?
                     </router-link>
-                    <router-link
-                        to="/magic-link"
-                        class="text-gray-600 hover:text-gray-900"
-                    >
+                    <router-link to="/magic-link" class="text-gray-600 hover:text-gray-900">
                         Sign in with magic link
                     </router-link>
                 </div>

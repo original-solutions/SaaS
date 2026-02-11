@@ -2,7 +2,14 @@
     <div>
         <div class="flex items-center gap-3 mb-6">
             <router-link to="/billing" class="text-gray-400 hover:text-gray-600">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                    />
+                </svg>
             </router-link>
             <h1 class="text-2xl font-bold text-gray-900">Available Plans</h1>
         </div>
@@ -23,8 +30,24 @@
 
                 <!-- Features -->
                 <ul class="space-y-2 mb-6 flex-1">
-                    <li v-for="(value, key) in plan.features" :key="String(key)" class="flex items-start gap-2 text-sm">
-                        <svg class="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    <li
+                        v-for="(value, key) in plan.features"
+                        :key="String(key)"
+                        class="flex items-start gap-2 text-sm"
+                    >
+                        <svg
+                            class="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M5 13l4 4L19 7"
+                            />
+                        </svg>
                         <span class="text-gray-700">{{ formatFeature(String(key), value) }}</span>
                     </li>
                 </ul>
@@ -32,7 +55,9 @@
                 <BaseButton variant="primary" class="w-full" disabled>
                     {{ plan.is_active ? 'Current Plan' : 'Select Plan' }}
                 </BaseButton>
-                <p class="text-xs text-gray-400 text-center mt-2">Billing integration coming soon</p>
+                <p class="text-xs text-gray-400 text-center mt-2">
+                    Billing integration coming soon
+                </p>
             </div>
         </div>
     </div>
@@ -57,7 +82,7 @@ function planDescription(plan: Plan): string {
 }
 
 function formatFeature(key: string, value: unknown): string {
-    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const label = key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
     if (typeof value === 'boolean') return value ? label : `No ${label.toLowerCase()}`;
     if (typeof value === 'number') return `${value} ${label}`;
     return `${label}: ${value}`;
