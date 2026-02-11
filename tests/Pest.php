@@ -12,7 +12,7 @@
 */
 
 pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -41,7 +41,45 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Create and act as a super admin user.
+ */
+function actingAsSuperAdmin(): Tests\TestCase
 {
-    // ..
+    $user = App\Models\User::factory()->create([
+        'is_super_admin' => true,
+    ]);
+
+    // Spatie role assignment will be added in Phase 3 after role seeder exists
+    return test()->actingAs($user, 'sanctum');
+}
+
+/**
+ * Create and act as a tenant owner.
+ */
+function actingAsTenantOwner(?App\Models\User $user = null): Tests\TestCase
+{
+    $user ??= App\Models\User::factory()->create();
+
+    return test()->actingAs($user, 'sanctum');
+}
+
+/**
+ * Create and act as a tenant member.
+ */
+function actingAsMember(?App\Models\User $user = null): Tests\TestCase
+{
+    $user ??= App\Models\User::factory()->create();
+
+    return test()->actingAs($user, 'sanctum');
+}
+
+/**
+ * Create and act as a read-only tenant user.
+ */
+function actingAsReadOnly(?App\Models\User $user = null): Tests\TestCase
+{
+    $user ??= App\Models\User::factory()->create();
+
+    return test()->actingAs($user, 'sanctum');
 }
