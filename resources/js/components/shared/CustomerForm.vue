@@ -1,11 +1,6 @@
 <template>
     <form @submit.prevent="$emit('submit', form)" class="space-y-4">
-        <BaseInput
-            v-model="form.name"
-            label="Name"
-            :error="errors.name"
-            id="name"
-        />
+        <BaseInput v-model="form.name" label="Name" :error="errors.name" id="name" />
 
         <BaseInput
             v-model="form.email"
@@ -15,19 +10,9 @@
             id="email"
         />
 
-        <BaseInput
-            v-model="form.phone"
-            label="Phone"
-            :error="errors.phone"
-            id="phone"
-        />
+        <BaseInput v-model="form.phone" label="Phone" :error="errors.phone" id="phone" />
 
-        <BaseInput
-            v-model="form.company"
-            label="Company"
-            :error="errors.company"
-            id="company"
-        />
+        <BaseInput v-model="form.company" label="Company" :error="errors.company" id="company" />
 
         <div>
             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>

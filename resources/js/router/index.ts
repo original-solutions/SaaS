@@ -22,6 +22,23 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/auth/ResetPasswordPage.vue'),
         meta: { guest: true },
     },
+    {
+        path: '/magic-link',
+        name: 'magic-link',
+        component: () => import('@/pages/auth/MagicLinkPage.vue'),
+        meta: { guest: true },
+    },
+    {
+        path: '/invitations/accept/:token',
+        name: 'accept-invite',
+        component: () => import('@/pages/auth/AcceptInvitePage.vue'),
+    },
+    {
+        path: '/verify-email',
+        name: 'verify-email',
+        component: () => import('@/pages/auth/VerifyEmailPage.vue'),
+        meta: { requiresAuth: true },
+    },
 
     // ─── App routes (authenticated + tenant) ──────────────────────────────────────────
     {
@@ -55,9 +72,54 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('@/pages/app/customers/CustomerEditPage.vue'),
             },
             {
+                path: 'notes',
+                name: 'notes',
+                component: () => import('@/pages/app/NotesPage.vue'),
+            },
+            {
+                path: 'files',
+                name: 'files',
+                component: () => import('@/pages/app/FilesPage.vue'),
+            },
+            {
+                path: 'imports',
+                name: 'imports',
+                component: () => import('@/pages/app/ImportsPage.vue'),
+            },
+            {
+                path: 'notifications',
+                name: 'notifications',
+                component: () => import('@/pages/app/NotificationsPage.vue'),
+            },
+            {
+                path: 'billing',
+                name: 'billing',
+                component: () => import('@/pages/app/billing/BillingPage.vue'),
+            },
+            {
+                path: 'billing/plans',
+                name: 'billing-plans',
+                component: () => import('@/pages/app/billing/PlansPage.vue'),
+            },
+            {
                 path: 'settings',
                 name: 'settings',
                 component: () => import('@/pages/app/SettingsPage.vue'),
+            },
+            {
+                path: 'settings/sessions',
+                name: 'settings-sessions',
+                component: () => import('@/pages/app/settings/SessionsPage.vue'),
+            },
+            {
+                path: 'settings/tokens',
+                name: 'settings-tokens',
+                component: () => import('@/pages/app/settings/TokensPage.vue'),
+            },
+            {
+                path: 'settings/two-factor',
+                name: 'settings-two-factor',
+                component: () => import('@/pages/app/settings/TwoFactorPage.vue'),
             },
             {
                 path: 'settings/team',
@@ -84,9 +146,39 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('@/pages/admin/AdminTenantsPage.vue'),
             },
             {
+                path: 'tenants/:id',
+                name: 'admin-tenant-detail',
+                component: () => import('@/pages/admin/AdminTenantDetailPage.vue'),
+            },
+            {
                 path: 'users',
                 name: 'admin-users',
                 component: () => import('@/pages/admin/AdminUsersPage.vue'),
+            },
+            {
+                path: 'users/:id',
+                name: 'admin-user-detail',
+                component: () => import('@/pages/admin/AdminUserDetailPage.vue'),
+            },
+            {
+                path: 'jobs',
+                name: 'admin-jobs',
+                component: () => import('@/pages/admin/AdminJobsPage.vue'),
+            },
+            {
+                path: 'audit',
+                name: 'admin-audit',
+                component: () => import('@/pages/admin/AdminAuditPage.vue'),
+            },
+            {
+                path: 'health',
+                name: 'admin-health',
+                component: () => import('@/pages/admin/AdminHealthPage.vue'),
+            },
+            {
+                path: 'search',
+                name: 'admin-search',
+                component: () => import('@/pages/admin/AdminSearchPage.vue'),
             },
         ],
     },

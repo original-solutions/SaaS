@@ -1,5 +1,6 @@
 <template>
-    <div class="min-h-screen bg-gray-50">
+    <ImpersonationBanner />
+    <div class="min-h-screen bg-gray-50" :class="{ 'pt-10': authStore.isImpersonating }">
         <!-- Top navigation -->
         <nav class="bg-white border-b border-gray-200">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -83,6 +84,7 @@ import { ChevronDown } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth';
 import { useTenantStore } from '@/stores/tenant';
 import TenantSwitcher from '@/components/shared/TenantSwitcher.vue';
+import ImpersonationBanner from '@/components/shared/ImpersonationBanner.vue';
 
 const authStore = useAuthStore();
 const tenantStore = useTenantStore();

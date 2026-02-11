@@ -13,9 +13,7 @@ interface UseApiReturn<T> {
 /**
  * Composable for wrapping async API calls with loading/error state.
  */
-export function useApi<T>(
-    fn: (...args: unknown[]) => Promise<{ data: T }>,
-): UseApiReturn<T> {
+export function useApi<T>(fn: (...args: unknown[]) => Promise<{ data: T }>): UseApiReturn<T> {
     const data = ref<T | null>(null) as Ref<T | null>;
     const error = ref<string | null>(null);
     const errors = ref<Record<string, string>>({});

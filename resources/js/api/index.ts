@@ -1,7 +1,7 @@
 import api from './client';
 import type {
     LoginCredentials,
-    LoginResponse,
+    LoginResult,
     User,
     Tenant,
     Plan,
@@ -11,13 +11,36 @@ import type {
     Tag,
     SavedView,
     DeviceSession,
+    PersonalAccessToken,
+    Activity,
+    Notification,
+    File,
+    Import,
+    Invitation,
+    TwoFactorSetupResponse,
+    AdminTenantDetail,
+    AdminUserDetail,
+    HealthCheck,
+    Subscription,
 } from './types';
 
 // ─── Auth ──────────────────────────────────────────────
 
 export const authApi = {
     login(credentials: LoginCredentials) {
-        return api.post<LoginResponse>('/auth/login', credentials);
+        return api.post<LoginResult>('/auth/login', credentials);
+    },
+
+    twoFactorChallenge(data: { two_factor_token: string; code: string }) {
+        return api.post<LoginResult>('/auth/2fa-challenge', data);
+    },
+
+    twoFactorRecovery(data: { two_factor_token: string; recovery_code: string }) {
+        return api.post<LoginResult>('/auth/2fa-recovery', data);
+    },
+
+    requestMagicLink(email: string) {
+        return api.post('/auth/magic-link', { email });
     },
 
     logout() {
@@ -84,15 +107,19 @@ export const accountApi = {
 
 export const twoFactorApi = {
     setup() {
-        return api.post('/2fa/setup');
+        return api.post<ApiResponse<TwoFactorSetupResponse>>('/2fa/setup');
     },
 
     confirm(code: string) {
-        return api.post('/2fa/confirm', { code });
+        return api.post<ApiResponse<{ recovery_codes: string[] }>>('/2fa/confirm', { code });
     },
 
     disable(code: string) {
         return api.delete('/2fa', { data: { code } });
+    },
+
+    recoveryCodes() {
+        return api.get<ApiResponse<{ recovery_codes: string[] }>>('/2fa/recovery-codes');
     },
 };
 
@@ -243,5 +270,216 @@ export const savedViewApi = {
 
     setDefault(id: number) {
         return api.post(`/saved-views/${id}/default`);
+    },
+};
+
+// ─── Notes ──────────────────────────────────────────
+
+export const noteApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<import('./types').Note>>('/notes', { params });
+    },
+
+    create(data: { noteable_type: string; noteable_id: number; body: string }) {
+        return api.post<ApiResponse<import('./types').Note>>('/notes', data);
+    },
+
+    update(id: number, data: { body: string }) {
+        return api.put<ApiResponse<import('./types').Note>>(`/notes/${id}`, data);
+    },
+
+    delete(id: number) {
+        return api.delete(`/notes/${id}`);
+    },
+};
+
+// ─── Files ──────────────────────────────────────────
+
+export const fileApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<File>>('/files', { params });
+    },
+
+    upload(data: FormData) {
+        return api.post<ApiResponse<File>>('/files', data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
+
+    download(id: number) {
+        return api.get(`/files/${id}/download`, { responseType: 'blob' });
+    },
+
+    delete(id: number) {
+        return api.delete(`/files/${id}`);
+    },
+};
+
+// ─── Imports ──────────────────────────────────────────
+
+export const importApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<Import>>('/imports', { params });
+    },
+
+    create(data: FormData) {
+        return api.post<ApiResponse<Import>>('/imports', data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
+
+    show(id: number) {
+        return api.get<ApiResponse<Import>>(`/imports/${id}`);
+    },
+
+    retry(id: number) {
+        return api.post(`/imports/${id}/retry`);
+    },
+};
+
+// ─── Notifications ──────────────────────────────────────────
+
+export const notificationApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<Notification>>('/notifications', { params });
+    },
+
+    markRead(id: string) {
+        return api.post(`/notifications/${id}/read`);
+    },
+
+    markAllRead() {
+        return api.post('/notifications/read-all');
+    },
+
+    unreadCount() {
+        return api.get<ApiResponse<{ count: number }>>('/notifications/unread-count');
+    },
+};
+
+// ─── Personal Access Tokens ──────────────────────────────────────────
+
+export const tokenApi = {
+    list() {
+        return api.get<ApiResponse<PersonalAccessToken[]>>('/tokens');
+    },
+
+    create(data: { name: string; abilities?: string[] }) {
+        return api.post<ApiResponse<{ token: string; accessToken: PersonalAccessToken }>>('/tokens', data);
+    },
+
+    revoke(id: number) {
+        return api.delete(`/tokens/${id}`);
+    },
+};
+
+// ─── Activity Log ──────────────────────────────────────────
+
+export const activityApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<Activity>>('/activity', { params });
+    },
+};
+
+// ─── Invitations (public) ──────────────────────────────────────────
+
+export const invitePublicApi = {
+    show(token: string) {
+        return api.get<ApiResponse<Invitation>>(`/invitations/accept/${token}`);
+    },
+
+    accept(token: string) {
+        return api.post<ApiResponse<{ tenant: Tenant }>>(`/invitations/accept/${token}`);
+    },
+};
+
+// ─── Admin ──────────────────────────────────────────
+
+const adminApi = api.create?.({ baseURL: '/admin/api/v1' }) ?? api;
+
+export const adminTenantsApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<AdminTenantDetail>>('/admin/tenants', { params });
+    },
+
+    show(id: number) {
+        return api.get<ApiResponse<AdminTenantDetail>>(`/admin/tenants/${id}`);
+    },
+
+    disable(id: number) {
+        return api.post(`/admin/tenants/${id}/disable`);
+    },
+
+    enable(id: number) {
+        return api.post(`/admin/tenants/${id}/enable`);
+    },
+
+    members(id: number) {
+        return api.get<ApiResponse<User[]>>(`/admin/tenants/${id}/members`);
+    },
+};
+
+export const adminUsersApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<AdminUserDetail>>('/admin/users', { params });
+    },
+
+    show(id: number) {
+        return api.get<ApiResponse<AdminUserDetail>>(`/admin/users/${id}`);
+    },
+
+    lock(id: number) {
+        return api.post(`/admin/users/${id}/lock`);
+    },
+
+    unlock(id: number) {
+        return api.post(`/admin/users/${id}/unlock`);
+    },
+
+    impersonate(id: number) {
+        return api.post<ApiResponse<{ access_token: string; expires_at: string }>>(`/admin/users/${id}/impersonate`);
+    },
+
+    stopImpersonation() {
+        return api.post('/admin/impersonation/stop');
+    },
+};
+
+export const adminJobsApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<Record<string, unknown>>>('/admin/jobs', { params });
+    },
+
+    failedJobs(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<Record<string, unknown>>>('/admin/jobs/failed', { params });
+    },
+
+    retry(id: number) {
+        return api.post(`/admin/jobs/failed/${id}/retry`);
+    },
+
+    retryAll() {
+        return api.post('/admin/jobs/failed/retry-all');
+    },
+};
+
+export const adminAuditApi = {
+    list(params?: Record<string, unknown>) {
+        return api.get<PaginatedResponse<Activity>>('/admin/audit', { params });
+    },
+};
+
+export const adminHealthApi = {
+    check() {
+        return api.get<ApiResponse<HealthCheck[]>>('/admin/health');
+    },
+};
+
+export const adminSearchApi = {
+    search(query: string) {
+        return api.get<ApiResponse<{
+            tenants: Tenant[];
+            users: User[];
+        }>>('/admin/search', { params: { q: query } });
     },
 };
