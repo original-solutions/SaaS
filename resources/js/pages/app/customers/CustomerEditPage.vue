@@ -7,17 +7,10 @@
       >
         &larr; Back
       </router-link>
-      <h1 class="text-2xl font-bold text-gray-900">
-        Edit Customer
-      </h1>
+      <h1 class="text-2xl font-bold text-gray-900">Edit Customer</h1>
     </div>
 
-    <div
-      v-if="isLoadingCustomer"
-      class="text-sm text-gray-500"
-    >
-      Loading...
-    </div>
+    <div v-if="isLoadingCustomer" class="text-sm text-gray-500">Loading...</div>
 
     <div
       v-else-if="customer"
@@ -53,34 +46,34 @@ const isSaving = ref(false);
 const errors = reactive<Record<string, string>>({});
 
 onMounted(async () => {
-    try {
-        const { data } = await customerApi.show(Number(route.params.id));
-        customer.value = data.data;
-    } finally {
-        isLoadingCustomer.value = false;
-    }
+  try {
+    const { data } = await customerApi.show(Number(route.params.id));
+    customer.value = data.data;
+  } finally {
+    isLoadingCustomer.value = false;
+  }
 });
 
 async function handleUpdate(data: Record<string, string>): Promise<void> {
-    isSaving.value = true;
-    Object.keys(errors).forEach((k) => delete errors[k]);
+  isSaving.value = true;
+  Object.keys(errors).forEach((k) => delete errors[k]);
 
-    try {
-        await customerApi.update(Number(route.params.id), data);
-        notifications.success('Customer updated.');
-        router.push({ name: 'customer-show', params: { id: route.params.id } });
-    } catch (err) {
-        const axiosError = err as AxiosError<ApiError>;
-        if (axiosError.response?.data?.errors) {
-            Object.assign(
-                errors,
-                Object.fromEntries(
-                    Object.entries(axiosError.response.data.errors).map(([k, v]) => [k, v[0]]),
-                ),
-            );
-        }
-    } finally {
-        isSaving.value = false;
+  try {
+    await customerApi.update(Number(route.params.id), data);
+    notifications.success('Customer updated.');
+    router.push({ name: 'customer-show', params: { id: route.params.id } });
+  } catch (err) {
+    const axiosError = err as AxiosError<ApiError>;
+    if (axiosError.response?.data?.errors) {
+      Object.assign(
+        errors,
+        Object.fromEntries(
+          Object.entries(axiosError.response.data.errors).map(([k, v]) => [k, v[0]])
+        )
+      );
     }
+  } finally {
+    isSaving.value = false;
+  }
 }
 </script>

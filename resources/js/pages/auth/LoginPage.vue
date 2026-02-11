@@ -2,9 +2,7 @@
   <GuestLayout>
     <!-- 2FA Challenge Step -->
     <template v-if="showTwoFactor">
-      <h2 class="text-lg font-semibold text-gray-900 mb-2">
-        Two-Factor Authentication
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">Two-Factor Authentication</h2>
       <p class="text-sm text-gray-600 mb-6">
         {{
           useRecoveryCode
@@ -13,10 +11,7 @@
         }}
       </p>
 
-      <form
-        class="space-y-4"
-        @submit.prevent="handleTwoFactor"
-      >
+      <form class="space-y-4" @submit.prevent="handleTwoFactor">
         <BaseInput
           v-if="!useRecoveryCode"
           id="2fa-code"
@@ -41,44 +36,33 @@
           :error="generalError || twoFactorErrors.recovery_code"
         />
 
-        <p
-          v-if="generalError"
-          class="text-sm text-red-600"
-        >
+        <p v-if="generalError" class="text-sm text-red-600">
           {{ generalError }}
         </p>
 
-        <BaseButton
-          type="submit"
-          variant="primary"
-          :loading="isLoading"
-          class="w-full"
-        >
+        <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">
           Verify
         </BaseButton>
 
         <div class="text-center">
-          <button
+          <BaseButton
             type="button"
+            variant="ghost"
+            size="sm"
             class="text-sm text-gray-600 hover:text-gray-900"
             @click="toggleTwoFactorMode"
           >
             {{ useRecoveryCode ? 'Use authenticator code' : 'Use a recovery code' }}
-          </button>
+          </BaseButton>
         </div>
       </form>
     </template>
 
     <!-- Login Step -->
     <template v-else>
-      <h2 class="text-lg font-semibold text-gray-900 mb-6">
-        Sign in
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-6">Sign in</h2>
 
-      <form
-        class="space-y-4"
-        @submit.prevent="handleLogin"
-      >
+      <form class="space-y-4" @submit.prevent="handleLogin">
         <BaseInput
           id="email"
           v-model="email"
@@ -99,33 +83,19 @@
           :error="loginErrors.password"
         />
 
-        <p
-          v-if="generalError"
-          class="text-sm text-red-600"
-        >
+        <p v-if="generalError" class="text-sm text-red-600">
           {{ generalError }}
         </p>
 
-        <BaseButton
-          type="submit"
-          variant="primary"
-          :loading="isLoading"
-          class="w-full"
-        >
+        <BaseButton type="submit" variant="primary" :loading="isLoading" class="w-full">
           Sign in
         </BaseButton>
 
         <div class="flex items-center justify-between text-sm">
-          <router-link
-            to="/forgot-password"
-            class="text-gray-600 hover:text-gray-900"
-          >
+          <router-link to="/forgot-password" class="text-gray-600 hover:text-gray-900">
             Forgot password?
           </router-link>
-          <router-link
-            to="/magic-link"
-            class="text-gray-600 hover:text-gray-900"
-          >
+          <router-link to="/magic-link" class="text-gray-600 hover:text-gray-900">
             Sign in with magic link
           </router-link>
         </div>
@@ -162,108 +132,107 @@ const useRecoveryCode = ref(false);
 const generalError = ref('');
 
 const {
-    handleSubmit: handleLoginSubmit,
-    defineField: defineLoginField,
-    errors: loginErrors,
-    setErrors: setLoginErrors,
+  handleSubmit: handleLoginSubmit,
+  defineField: defineLoginField,
+  errors: loginErrors,
+  setErrors: setLoginErrors,
 } = useForm({
-    validationSchema: toTypedSchema(loginSchema),
-    initialValues: {
-        email: '',
-        password: '',
-    },
+  validationSchema: toTypedSchema(loginSchema),
+  initialValues: {
+    email: '',
+    password: '',
+  },
 });
 
 const [email, emailAttrs] = defineLoginField('email');
 const [password, passwordAttrs] = defineLoginField('password');
 
 const {
-    handleSubmit: handleTwoFactorSubmit,
-    defineField: defineTwoFactorField,
-    errors: twoFactorErrors,
-    resetForm: resetTwoFactorForm,
+  handleSubmit: handleTwoFactorSubmit,
+  defineField: defineTwoFactorField,
+  errors: twoFactorErrors,
+  resetForm: resetTwoFactorForm,
 } = useForm({
-    validationSchema: computed(() =>
-        toTypedSchema(useRecoveryCode.value ? twoFactorRecoverySchema : twoFactorCodeSchema),
-    ),
-    initialValues: {
-        code: '',
-        recovery_code: '',
-    },
+  validationSchema: computed(() =>
+    toTypedSchema(useRecoveryCode.value ? twoFactorRecoverySchema : twoFactorCodeSchema)
+  ),
+  initialValues: {
+    code: '',
+    recovery_code: '',
+  },
 });
 
 const [twoFactorCode, twoFactorCodeAttrs] = defineTwoFactorField('code');
 const [recoveryCode, recoveryCodeAttrs] = defineTwoFactorField('recovery_code');
 
 function clearErrors(): void {
-    generalError.value = '';
-    setLoginErrors({});
+  generalError.value = '';
+  setLoginErrors({});
 }
 
 function redirectAfterLogin(): void {
-    tenant.initialize(auth.tenants);
-    notifications.success('Signed in successfully');
-    const redirect = (route.query.redirect as string) || '/';
-    router.push(redirect);
+  tenant.initialize(auth.tenants);
+  notifications.success('Signed in successfully');
+  const redirect = (route.query.redirect as string) || '/';
+  router.push(redirect);
 }
 
 const handleLogin = handleLoginSubmit(async (values) => {
-    clearErrors();
-    isLoading.value = true;
+  clearErrors();
+  isLoading.value = true;
 
-    try {
-        const result = await auth.login(values);
+  try {
+    const result = await auth.login(values);
 
-        if ('two_factor' in result && result.two_factor) {
-            showTwoFactor.value = true;
-            resetTwoFactorForm();
-            return;
-        }
-
-        redirectAfterLogin();
-    } catch (err) {
-        const axiosError = err as AxiosError<ApiError>;
-        if (axiosError.response?.status === 422) {
-            const data = axiosError.response.data;
-            if (data.errors) {
-                setLoginErrors(mapLaravelErrors(data.errors));
-            }
-        } else if (axiosError.response?.status === 401) {
-            generalError.value = 'Invalid credentials.';
-        } else {
-            generalError.value = 'An error occurred. Please try again.';
-        }
-    } finally {
-        isLoading.value = false;
+    if ('two_factor' in result && result.two_factor) {
+      showTwoFactor.value = true;
+      resetTwoFactorForm();
+      return;
     }
+
+    redirectAfterLogin();
+  } catch (err) {
+    const axiosError = err as AxiosError<ApiError>;
+    if (axiosError.response?.status === 422) {
+      const data = axiosError.response.data;
+      if (data.errors) {
+        setLoginErrors(mapLaravelErrors(data.errors));
+      }
+    } else if (axiosError.response?.status === 401) {
+      generalError.value = 'Invalid credentials.';
+    } else {
+      generalError.value = 'An error occurred. Please try again.';
+    }
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 const handleTwoFactor = handleTwoFactorSubmit(async (values) => {
-    generalError.value = '';
-    isLoading.value = true;
+  generalError.value = '';
+  isLoading.value = true;
 
-    try {
-        if (useRecoveryCode.value) {
-            const recovery = 'recovery_code' in values ? values.recovery_code : '';
-            await auth.completeTwoFactorRecovery(recovery);
-        } else {
-            const code = 'code' in values ? values.code : '';
-            await auth.completeTwoFactor(code);
-        }
-
-        redirectAfterLogin();
-    } catch (err) {
-        const axiosError = err as AxiosError<ApiError>;
-        generalError.value =
-            axiosError.response?.data?.message ?? 'Invalid code. Please try again.';
-    } finally {
-        isLoading.value = false;
+  try {
+    if (useRecoveryCode.value) {
+      const recovery = 'recovery_code' in values ? values.recovery_code : '';
+      await auth.completeTwoFactorRecovery(recovery);
+    } else {
+      const code = 'code' in values ? values.code : '';
+      await auth.completeTwoFactor(code);
     }
+
+    redirectAfterLogin();
+  } catch (err) {
+    const axiosError = err as AxiosError<ApiError>;
+    generalError.value = axiosError.response?.data?.message ?? 'Invalid code. Please try again.';
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 function toggleTwoFactorMode(): void {
-    generalError.value = '';
-    useRecoveryCode.value = !useRecoveryCode.value;
-    resetTwoFactorForm();
+  generalError.value = '';
+  useRecoveryCode.value = !useRecoveryCode.value;
+  resetTwoFactorForm();
 }
 </script>

@@ -8,16 +8,16 @@ import { cn } from '@/lib/utils';
 import SheetOverlay from './SheetOverlay.vue';
 
 interface SheetContentProps extends DialogContentProps {
-    class?: HTMLAttributes['class'];
-    side?: 'top' | 'right' | 'bottom' | 'left';
+  class?: HTMLAttributes['class'];
+  side?: 'top' | 'right' | 'bottom' | 'left';
 }
 
 defineOptions({
-    inheritAttrs: false,
+  inheritAttrs: false,
 });
 
 const props = withDefaults(defineProps<SheetContentProps>(), {
-    side: 'right',
+  side: 'right',
 });
 const emits = defineEmits<DialogContentEmits>();
 
@@ -42,7 +42,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
             'data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b',
           side === 'bottom' &&
             'data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t',
-          props.class,
+          props.class
         )
       "
       v-bind="{ ...$attrs, ...forwarded }"

@@ -1,8 +1,5 @@
 <template>
-  <Dialog
-    :open="state.open"
-    @update:open="handleOpenChange"
-  >
+  <Dialog :open="state.open" @update:open="handleOpenChange">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ state.options?.title }}</DialogTitle>
@@ -12,10 +9,7 @@
       </DialogHeader>
 
       <DialogFooter class="gap-2">
-        <Button
-          variant="outline"
-          @click="close(false)"
-        >
+        <Button variant="outline" @click="close(false)">
           {{ state.options?.cancelText ?? 'Cancel' }}
         </Button>
         <Button
@@ -32,20 +26,20 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 
 const { state, close } = useConfirmDialog();
 
 function handleOpenChange(open: boolean): void {
-    if (!open) {
-        close(false);
-    }
+  if (!open) {
+    close(false);
+  }
 }
 </script>

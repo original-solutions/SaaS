@@ -1,16 +1,8 @@
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <router-link
-        to="/settings"
-        class="text-gray-400 hover:text-gray-600"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <router-link to="/settings" class="text-gray-400 hover:text-gray-600">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -19,9 +11,7 @@
           />
         </svg>
       </router-link>
-      <h1 class="text-2xl font-bold text-gray-900">
-        Device Sessions
-      </h1>
+      <h1 class="text-2xl font-bold text-gray-900">Device Sessions</h1>
     </div>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -29,34 +19,23 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600">
-              Manage your active sessions across devices. If you notice any unfamiliar
-              sessions, revoke them immediately.
+              Manage your active sessions across devices. If you notice any unfamiliar sessions,
+              revoke them immediately.
             </p>
           </div>
-          <BaseButton
-            variant="danger"
-            size="sm"
-            :loading="revokingAll"
-            @click="revokeAllSessions"
-          >
+          <BaseButton variant="danger" size="sm" :loading="revokingAll" @click="revokeAllSessions">
             Revoke All
           </BaseButton>
         </div>
       </div>
 
-      <div
-        v-if="isLoading"
-        class="p-6 text-center"
-      >
+      <div v-if="isLoading" class="p-6 text-center">
         <div
           class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"
         />
       </div>
 
-      <ul
-        v-else
-        class="divide-y divide-gray-200"
-      >
+      <ul v-else class="divide-y divide-gray-200">
         <li
           v-for="session in sessions"
           :key="session.id"
@@ -89,10 +68,7 @@
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <span
-              v-if="session.revoked_at"
-              class="text-xs text-red-500 font-medium"
-            >Revoked</span>
+            <span v-if="session.revoked_at" class="text-xs text-red-500 font-medium">Revoked</span>
             <BaseButton
               v-else
               variant="ghost"
@@ -104,10 +80,7 @@
             </BaseButton>
           </div>
         </li>
-        <li
-          v-if="sessions.length === 0"
-          class="p-6 text-center text-sm text-gray-500"
-        >
+        <li v-if="sessions.length === 0" class="p-6 text-center text-sm text-gray-500">
           No active sessions found.
         </li>
       </ul>
@@ -130,49 +103,49 @@ const revokingId = ref<number | null>(null);
 const revokingAll = ref(false);
 
 function formatRelativeTime(dateStr: string): string {
-    const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-    if (seconds < 60) return 'just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return `${Math.floor(seconds / 86400)}d ago`;
+  const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
 }
 
 async function loadSessions(): Promise<void> {
-    try {
-        const { data } = await sessionApi.list();
-        sessions.value = data.data;
-    } finally {
-        isLoading.value = false;
-    }
+  try {
+    const { data } = await sessionApi.list();
+    sessions.value = data.data;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 async function revokeSession(id: number): Promise<void> {
-    revokingId.value = id;
-    try {
-        await sessionApi.revoke(id);
-        const session = sessions.value.find((s) => s.id === id);
-        if (session) session.revoked_at = new Date().toISOString();
-        notifications.success('Session revoked.');
-    } catch {
-        notifications.error('Failed to revoke session.');
-    } finally {
-        revokingId.value = null;
-    }
+  revokingId.value = id;
+  try {
+    await sessionApi.revoke(id);
+    const session = sessions.value.find((s) => s.id === id);
+    if (session) session.revoked_at = new Date().toISOString();
+    notifications.success('Session revoked.');
+  } catch {
+    notifications.error('Failed to revoke session.');
+  } finally {
+    revokingId.value = null;
+  }
 }
 
 async function revokeAllSessions(): Promise<void> {
-    revokingAll.value = true;
-    try {
-        await sessionApi.revokeAll();
-        sessions.value.forEach((s) => {
-            if (!s.revoked_at) s.revoked_at = new Date().toISOString();
-        });
-        notifications.success('All sessions revoked.');
-    } catch {
-        notifications.error('Failed to revoke sessions.');
-    } finally {
-        revokingAll.value = false;
-    }
+  revokingAll.value = true;
+  try {
+    await sessionApi.revokeAll();
+    sessions.value.forEach((s) => {
+      if (!s.revoked_at) s.revoked_at = new Date().toISOString();
+    });
+    notifications.success('All sessions revoked.');
+  } catch {
+    notifications.error('Failed to revoke sessions.');
+  } finally {
+    revokingAll.value = false;
+  }
 }
 
 onMounted(loadSessions);

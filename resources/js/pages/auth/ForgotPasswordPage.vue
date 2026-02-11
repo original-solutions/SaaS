@@ -1,24 +1,13 @@
 <template>
   <GuestLayout>
-    <h2 class="text-lg font-semibold text-gray-900 mb-6">
-      Forgot password
-    </h2>
+    <h2 class="text-lg font-semibold text-gray-900 mb-6">Forgot password</h2>
 
-    <div
-      v-if="sent"
-      class="text-sm text-green-700 bg-green-50 rounded-md p-4"
-    >
+    <div v-if="sent" class="text-sm text-green-700 bg-green-50 rounded-md p-4">
       We've emailed you a password reset link.
     </div>
 
-    <form
-      v-else
-      class="space-y-4"
-      @submit.prevent="onSubmit"
-    >
-      <p class="text-sm text-gray-600">
-        Enter your email and we'll send you a reset link.
-      </p>
+    <form v-else class="space-y-4" @submit.prevent="onSubmit">
+      <p class="text-sm text-gray-600">Enter your email and we'll send you a reset link.</p>
 
       <BaseInput
         id="email"
@@ -30,20 +19,12 @@
         :error="errors.email"
       />
 
-      <BaseButton
-        type="submit"
-        variant="primary"
-        :loading="isSubmitting"
-        class="w-full"
-      >
+      <BaseButton type="submit" variant="primary" :loading="isSubmitting" class="w-full">
         Send reset link
       </BaseButton>
 
       <div class="text-center">
-        <router-link
-          to="/login"
-          class="text-sm text-gray-600 hover:text-gray-900"
-        >
+        <router-link to="/login" class="text-sm text-gray-600 hover:text-gray-900">
           Back to sign in
         </router-link>
       </div>
@@ -67,30 +48,30 @@ import { mapLaravelErrors } from '@/lib/laravelErrors';
 const sent = ref(false);
 
 const { handleSubmit, defineField, errors, setErrors, resetForm, isSubmitting } = useForm({
-    validationSchema: toTypedSchema(forgotPasswordSchema),
-    initialValues: {
-        email: '',
-    },
+  validationSchema: toTypedSchema(forgotPasswordSchema),
+  initialValues: {
+    email: '',
+  },
 });
 
 const [email, emailAttrs] = defineField('email');
 
 const onSubmit = handleSubmit(async (values) => {
-    setErrors({});
+  setErrors({});
 
-    try {
-        await authApi.forgotPassword(values.email);
-        sent.value = true;
-        resetForm();
-    } catch (err) {
-        const axiosError = err as AxiosError<ApiError>;
+  try {
+    await authApi.forgotPassword(values.email);
+    sent.value = true;
+    resetForm();
+  } catch (err) {
+    const axiosError = err as AxiosError<ApiError>;
 
-        if (axiosError.response?.status === 422) {
-            setErrors(mapLaravelErrors(axiosError.response.data.errors));
-            return;
-        }
-
-        setErrors({ email: 'Unable to send reset link. Please check your email.' });
+    if (axiosError.response?.status === 422) {
+      setErrors(mapLaravelErrors(axiosError.response.data.errors));
+      return;
     }
+
+    setErrors({ email: 'Unable to send reset link. Please check your email.' });
+  }
 });
 </script>

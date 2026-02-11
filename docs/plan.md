@@ -40,8 +40,8 @@ Each phase follows the cycle: **write Pest tests → implement to green → run 
 2. **Install frontend packages** — `vue@3`, `vue-router@4`, `pinia`, `@vitejs/plugin-vue`, `typescript`, `vue-tsc`, `shadcn-vue`, `radix-vue`, `@tanstack/vue-table`, `vee-validate`, `zod`, `lucide-vue-next`, `prettier`, `eslint`, `eslint-plugin-vue`, `@typescript-eslint/parser`. Convert `resources/js/app.js` → `app.ts`.
 3. **Configure Vite** — Add Vue plugin + TypeScript support in `vite.config.js`. Add `tsconfig.json`.
 4. **[SPATIE] Publish and configure Spatie configs:**
-    - `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"` → creates `config/permission.php`. Set `'teams' => true`, `'team_foreign_key' => 'tenant_id'`. Set guard to `api` (Sanctum).
-    - `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider"` → creates `config/activitylog.php`. Set `'activity_model' => \App\Models\Activity::class`, configure `delete_records_older_than_days`.
+   - `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"` → creates `config/permission.php`. Set `'teams' => true`, `'team_foreign_key' => 'tenant_id'`. Set guard to `api` (Sanctum).
+   - `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider"` → creates `config/activitylog.php`. Set `'activity_model' => \App\Models\Activity::class`, configure `delete_records_older_than_days`.
 5. **Create backend folder structure** per spec §14A.1 — directories under `app/` for `Actions/`, `Services/`, `DTO/`, `Enums/`, `Support/Auth/`, `Support/Tenancy/`, `Support/Impersonation/`, `Support/Query/`, `Events/`, `Listeners/`, `Notifications/`, `Jobs/`, `Rules/`, `Policies/`, `Http/Middleware/`, `Http/Requests/Api/V1/`, `Http/Controllers/Api/V1/`, `Http/Controllers/Admin/`.
 6. **Create frontend folder structure** per spec §14A.2 — `resources/js/router/`, `api/`, `auth/`, `tenancy/`, `layouts/`, `components/ui/`, `components/shared/`, `pages/auth/`, `pages/app/`, `pages/admin/`, `stores/`, `realtime/`.
 7. **Create route files** — `routes/api_v1.php` and `routes/admin.php`. Register in `bootstrap/app.php` with `/api/v1` prefix and `/admin` prefix respectively.
@@ -252,10 +252,10 @@ Spatie IS the authorization engine.
 ### Policies
 
 - `TenantPolicy` — uses `$user->hasRole('owner')` and `$user->hasRole(['owner', 'admin'])` for checks (automatically scoped to current tenant via middleware). Example:
-    - `update`: `$user->hasRole(['owner', 'admin'])`
-    - `delete`: `$user->hasRole('owner')`
-    - `viewAny`/`view`: `$user->hasAnyRole(['owner', 'admin', 'member', 'readonly'])`
-    - `create`: `$user->hasAnyRole(['owner', 'admin', 'member'])`
+  - `update`: `$user->hasRole(['owner', 'admin'])`
+  - `delete`: `$user->hasRole('owner')`
+  - `viewAny`/`view`: `$user->hasAnyRole(['owner', 'admin', 'member', 'readonly'])`
+  - `create`: `$user->hasAnyRole(['owner', 'admin', 'member'])`
 
 ### Gates
 
@@ -343,7 +343,7 @@ Document in `config/permission.php` comments AND `config/saas.php`:
 ### [SPATIE] Migrations
 
 1. **Activity log** — publish Spatie's migration, customise to add: `event` (string, nullable), `batch_uuid` (uuid, nullable, indexed), `tenant_id` (unsignedBigInteger, nullable, indexed), `impersonator_user_id` (unsignedBigInteger, nullable), `request_id` (uuid, nullable, indexed), `ip_address` (string(45), nullable), `user_agent` (text, nullable). Spatie's base columns remain as-is.
-    - **Schema mapping to spec §A3.AL:** `causer_id` = spec's `actor_user_id`, `event` = spec's `action`, `properties->old` = spec's `before`, `properties->attributes` = spec's `after`, additional `properties` keys = spec's `meta`. Custom columns cover `tenant_id`, `impersonator_user_id`, `ip_address`, `user_agent`, `request_id`.
+   - **Schema mapping to spec §A3.AL:** `causer_id` = spec's `actor_user_id`, `event` = spec's `action`, `properties->old` = spec's `before`, `properties->attributes` = spec's `after`, additional `properties` keys = spec's `meta`. Custom columns cover `tenant_id`, `impersonator_user_id`, `ip_address`, `user_agent`, `request_id`.
 2. `notifications` table — Laravel database notifications migration.
 3. `notification_preferences` table — per §A3.NP.
 4. `feature_flags` table — per §A5.FF.
@@ -355,11 +355,11 @@ Document in `config/permission.php` comments AND `config/saas.php`:
 
 - Extends `Spatie\Activitylog\Models\Activity`.
 - `booted()` method with `creating` callback that auto-fills:
-    - `tenant_id` from `TenantContext`
-    - `ip_address` from `request()->ip()`
-    - `user_agent` from `request()->userAgent()`
-    - `request_id` from current correlation ID
-    - `impersonator_user_id` from impersonation context
+  - `tenant_id` from `TenantContext`
+  - `ip_address` from `request()->ip()`
+  - `user_agent` from `request()->userAgent()`
+  - `request_id` from current correlation ID
+  - `impersonator_user_id` from impersonation context
 - Tenant global scope that filters by current tenant when context is set (allows platform-level logs when no tenant).
 - Relationships: `tenant()`, `impersonator()`.
 - PII redaction: `scopeRedacted()` that strips sensitive fields from `properties` JSON based on configurable denylist.
@@ -826,21 +826,21 @@ Full setup — Super Admin, demo tenant with Owner + Member + Read-only users, C
 
 1. **One-command setup** — `composer run setup`: copy `.env.example` → `.env`, `php artisan key:generate`, `php artisan migrate --seed`, `npm install`, `npm run build`.
 2. **CI pipeline** — GitHub Actions workflow:
-    - Install → `vendor/bin/pint --test` → `php artisan test` → `npm run build`.
-    - **[NEW]** `composer audit` step — fails on known vulnerabilities.
-    - **[NEW]** `npm audit --audit-level=high` step — fails on high/critical JS vulnerabilities.
-    - **[NEW]** Dependency freshness check — report (non-blocking) on packages with no updates in >12 months for auth/crypto/sanitisation categories.
-    - (Optional) Static analysis step.
+   - Install → `vendor/bin/pint --test` → `php artisan test` → `npm run build`.
+   - **[NEW]** `composer audit` step — fails on known vulnerabilities.
+   - **[NEW]** `npm audit --audit-level=high` step — fails on high/critical JS vulnerabilities.
+   - **[NEW]** Dependency freshness check — report (non-blocking) on packages with no updates in >12 months for auth/crypto/sanitisation categories.
+   - (Optional) Static analysis step.
 3. **[NEW] Abandoned package policy** — `docs/DEPENDENCY_POLICY.md`: packages for auth, crypto, or HTML sanitisation must have had a release within 12 months. CI flags violations.
 4. **Data retention** — Configurable per-tenant for activity logs. `artisan saas:prune-activity-logs` command. **[NEW]** Document in `config/saas.php` what's retained after tenant hard-deletion (billing/compliance logs preserved, all else removed).
 5. **Backup config** — Document backup strategy (DB + files), restore runbook, RPO/RTO objectives in `docs/ops/`.
 6. **Deploy checklist** — Zero-downtime deploy steps per §9.0A in `docs/ops/deploy.md`.
 7. **Final security hardening pass:**
-    - Verify CSP nonce implementation end-to-end.
-    - **[NEW]** Grep for `v-html` usage — must be zero.
-    - Verify lockfiles (`composer.lock`, `package-lock.json`) committed.
-    - **[NEW]** Verify ESLint disallows `eval`, `new Function`.
-    - Verify no `eval`/`Function` constructors in frontend.
+   - Verify CSP nonce implementation end-to-end.
+   - **[NEW]** Grep for `v-html` usage — must be zero.
+   - Verify lockfiles (`composer.lock`, `package-lock.json`) committed.
+   - **[NEW]** Verify ESLint disallows `eval`, `new Function`.
+   - Verify no `eval`/`Function` constructors in frontend.
 
 ### Tests
 

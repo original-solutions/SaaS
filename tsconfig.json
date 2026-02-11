@@ -1,25 +1,25 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "strict": true,
-        "jsx": "preserve",
-        "importHelpers": true,
-        "experimentalDecorators": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "useDefineForClassFields": true,
-        "sourceMap": true,
-        "baseUrl": ".",
-        "types": ["vite/client"],
-        "paths": {
-            "@/*": ["resources/js/*"]
-        },
-        "lib": ["ESNext", "DOM", "DOM.Iterable"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["resources/js/*"]
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.vue"],
-    "exclude": ["node_modules", "public"]
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+  },
+  "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.vue"],
+  "exclude": ["node_modules", "public"]
 }

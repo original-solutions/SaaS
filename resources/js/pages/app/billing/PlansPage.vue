@@ -1,16 +1,8 @@
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <router-link
-        to="/billing"
-        class="text-gray-400 hover:text-gray-600"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <router-link to="/billing" class="text-gray-400 hover:text-gray-600">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -19,22 +11,12 @@
           />
         </svg>
       </router-link>
-      <h1 class="text-2xl font-bold text-gray-900">
-        Available Plans
-      </h1>
+      <h1 class="text-2xl font-bold text-gray-900">Available Plans</h1>
     </div>
 
-    <div
-      v-if="isLoading"
-      class="text-sm text-gray-500"
-    >
-      Loading plans...
-    </div>
+    <div v-if="isLoading" class="text-sm text-gray-500">Loading plans...</div>
 
-    <div
-      v-else
-      class="grid grid-cols-1 md:grid-cols-3 gap-6"
-    >
+    <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div
         v-for="plan in plans"
         :key="plan.id"
@@ -74,16 +56,10 @@
           </li>
         </ul>
 
-        <BaseButton
-          variant="primary"
-          class="w-full"
-          disabled
-        >
+        <BaseButton variant="primary" class="w-full" disabled>
           {{ plan.is_active ? 'Current Plan' : 'Select Plan' }}
         </BaseButton>
-        <p class="text-xs text-gray-400 text-center mt-2">
-          Billing integration coming soon
-        </p>
+        <p class="text-xs text-gray-400 text-center mt-2">Billing integration coming soon</p>
       </div>
     </div>
   </div>
@@ -99,28 +75,28 @@ const plans = ref<Plan[]>([]);
 const isLoading = ref(true);
 
 function planDescription(plan: Plan): string {
-    const descriptions: Record<string, string> = {
-        Starter: 'For individuals and small teams getting started.',
-        Professional: 'For growing businesses that need more power.',
-        Enterprise: 'For large organizations with advanced needs.',
-    };
-    return descriptions[plan.name] ?? 'A plan for your needs.';
+  const descriptions: Record<string, string> = {
+    Starter: 'For individuals and small teams getting started.',
+    Professional: 'For growing businesses that need more power.',
+    Enterprise: 'For large organizations with advanced needs.',
+  };
+  return descriptions[plan.name] ?? 'A plan for your needs.';
 }
 
 function formatFeature(key: string, value: unknown): string {
-    const label = key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-    if (typeof value === 'boolean') return value ? label : `No ${label.toLowerCase()}`;
-    if (typeof value === 'number') return `${value} ${label}`;
-    return `${label}: ${value}`;
+  const label = key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  if (typeof value === 'boolean') return value ? label : `No ${label.toLowerCase()}`;
+  if (typeof value === 'number') return `${value} ${label}`;
+  return `${label}: ${value}`;
 }
 
 async function loadPlans(): Promise<void> {
-    try {
-        const { data } = await billingApi.plans();
-        plans.value = data.data;
-    } finally {
-        isLoading.value = false;
-    }
+  try {
+    const { data } = await billingApi.plans();
+    plans.value = data.data;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 onMounted(loadPlans);

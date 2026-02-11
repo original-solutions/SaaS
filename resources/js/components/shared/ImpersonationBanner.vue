@@ -32,32 +32,32 @@ const now = ref(Date.now());
 let interval: ReturnType<typeof setInterval> | null = null;
 
 const timeRemaining = computed(() => {
-    if (!authStore.impersonationExpiresAt) return '';
-    const diff = new Date(authStore.impersonationExpiresAt).getTime() - now.value;
-    if (diff <= 0) return 'expired';
-    const minutes = Math.floor(diff / 60000);
-    const seconds = Math.floor((diff % 60000) / 1000);
-    return `${minutes}m ${seconds}s`;
+  if (!authStore.impersonationExpiresAt) return '';
+  const diff = new Date(authStore.impersonationExpiresAt).getTime() - now.value;
+  if (diff <= 0) return 'expired';
+  const minutes = Math.floor(diff / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  return `${minutes}m ${seconds}s`;
 });
 
 async function stopImpersonation(): Promise<void> {
-    try {
-        await authStore.stopImpersonation();
-        await authStore.fetchUser();
-        notifications.info('Impersonation ended.');
-        router.push('/admin');
-    } catch {
-        notifications.error('Failed to stop impersonation.');
-    }
+  try {
+    await authStore.stopImpersonation();
+    await authStore.fetchUser();
+    notifications.info('Impersonation ended.');
+    router.push('/admin');
+  } catch {
+    notifications.error('Failed to stop impersonation.');
+  }
 }
 
 onMounted(() => {
-    interval = setInterval(() => {
-        now.value = Date.now();
-    }, 1000);
+  interval = setInterval(() => {
+    now.value = Date.now();
+  }, 1000);
 });
 
 onUnmounted(() => {
-    if (interval) clearInterval(interval);
+  if (interval) clearInterval(interval);
 });
 </script>

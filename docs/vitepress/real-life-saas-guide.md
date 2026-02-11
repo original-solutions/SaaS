@@ -16,9 +16,9 @@ This guide walks you through using the Laravel SaaS Base Template to build a rea
 
 - Use the resource generator to create models, migrations, controllers, policies, Vue pages, and tests
 - Example:
-    ```bash
-    php artisan make:resource Project
-    ```
+  ```bash
+  php artisan make:resource Project
+  ```
 - Customize generated files as needed
 
 ## 3. Implement Business Logic

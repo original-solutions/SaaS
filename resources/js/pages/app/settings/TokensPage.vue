@@ -1,16 +1,8 @@
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <router-link
-        to="/settings"
-        class="text-gray-400 hover:text-gray-600"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <router-link to="/settings" class="text-gray-400 hover:text-gray-600">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -19,42 +11,29 @@
           />
         </svg>
       </router-link>
-      <h1 class="text-2xl font-bold text-gray-900">
-        Personal Access Tokens
-      </h1>
+      <h1 class="text-2xl font-bold text-gray-900">Personal Access Tokens</h1>
     </div>
 
     <!-- Create Token -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
-        Create New Token
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Create New Token</h2>
 
-      <div
-        v-if="newTokenValue"
-        class="rounded-md bg-green-50 border border-green-200 p-4 mb-4"
-      >
+      <div v-if="newTokenValue" class="rounded-md bg-green-50 border border-green-200 p-4 mb-4">
         <p class="text-sm text-green-800 mb-2">
           Token created! Copy it now — you won't be able to see it again.
         </p>
         <div class="flex items-center gap-2">
           <code
             class="flex-1 text-xs bg-white px-3 py-2 rounded border border-green-300 font-mono break-all"
-          >{{ newTokenValue }}</code>
-          <BaseButton
-            variant="secondary"
-            size="sm"
-            @click="copyToken"
+            >{{ newTokenValue }}</code
           >
+          <BaseButton variant="secondary" size="sm" @click="copyToken">
             {{ copied ? 'Copied!' : 'Copy' }}
           </BaseButton>
         </div>
       </div>
 
-      <form
-        class="flex items-end gap-3 max-w-md"
-        @submit.prevent="createToken"
-      >
+      <form class="flex items-end gap-3 max-w-md" @submit.prevent="createToken">
         <BaseInput
           id="token-name"
           v-model="tokenName"
@@ -64,12 +43,7 @@
           :error="errors.name"
           class="flex-1"
         />
-        <BaseButton
-          type="submit"
-          variant="primary"
-          :loading="isSubmitting"
-          size="sm"
-        >
+        <BaseButton type="submit" variant="primary" :loading="isSubmitting" size="sm">
           Create
         </BaseButton>
       </form>
@@ -78,29 +52,17 @@
     <!-- Token List -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
       <div class="p-6 border-b border-gray-200">
-        <h2 class="text-lg font-semibold text-gray-900">
-          Your Tokens
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-900">Your Tokens</h2>
       </div>
 
-      <div
-        v-if="isLoading"
-        class="p-6 text-center"
-      >
+      <div v-if="isLoading" class="p-6 text-center">
         <div
           class="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"
         />
       </div>
 
-      <ul
-        v-else
-        class="divide-y divide-gray-200"
-      >
-        <li
-          v-for="token in tokens"
-          :key="token.id"
-          class="p-4 flex items-center justify-between"
-        >
+      <ul v-else class="divide-y divide-gray-200">
+        <li v-for="token in tokens" :key="token.id" class="p-4 flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-900">
               {{ token.name }}
@@ -121,10 +83,7 @@
             Revoke
           </BaseButton>
         </li>
-        <li
-          v-if="tokens.length === 0"
-          class="p-6 text-center text-sm text-gray-500"
-        >
+        <li v-if="tokens.length === 0" class="p-6 text-center text-sm text-gray-500">
           No personal access tokens yet.
         </li>
       </ul>
@@ -151,10 +110,10 @@ const notifications = useNotificationStore();
 const tokens = ref<PersonalAccessToken[]>([]);
 const isLoading = ref(true);
 const { handleSubmit, defineField, errors, setErrors, resetForm, isSubmitting } = useForm({
-    validationSchema: toTypedSchema(createPersonalAccessTokenSchema),
-    initialValues: {
-        name: '',
-    },
+  validationSchema: toTypedSchema(createPersonalAccessTokenSchema),
+  initialValues: {
+    name: '',
+  },
 });
 
 const [tokenName, tokenNameAttrs] = defineField('name');
@@ -164,62 +123,62 @@ const copied = ref(false);
 const revokingId = ref<number | null>(null);
 
 function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    });
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 async function loadTokens(): Promise<void> {
-    try {
-        const { data } = await tokenApi.list();
-        tokens.value = data.data;
-    } finally {
-        isLoading.value = false;
-    }
+  try {
+    const { data } = await tokenApi.list();
+    tokens.value = data.data;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 const createToken = handleSubmit(async (values) => {
-    setErrors({});
-    newTokenValue.value = '';
+  setErrors({});
+  newTokenValue.value = '';
 
-    try {
-        const { data } = await tokenApi.create({ name: values.name });
-        newTokenValue.value = data.data.token;
-        tokens.value.unshift(data.data.accessToken);
-        resetForm();
-    } catch (err) {
-        const axiosError = err as AxiosError<ApiError>;
+  try {
+    const { data } = await tokenApi.create({ name: values.name });
+    newTokenValue.value = data.data.token;
+    tokens.value.unshift(data.data.accessToken);
+    resetForm();
+  } catch (err) {
+    const axiosError = err as AxiosError<ApiError>;
 
-        if (axiosError.response?.status === 422) {
-            setErrors(mapLaravelErrors(axiosError.response.data.errors));
-            return;
-        }
-
-        notifications.error('Failed to create token.');
+    if (axiosError.response?.status === 422) {
+      setErrors(mapLaravelErrors(axiosError.response.data.errors));
+      return;
     }
+
+    notifications.error('Failed to create token.');
+  }
 });
 
 async function revokeToken(id: number): Promise<void> {
-    revokingId.value = id;
-    try {
-        await tokenApi.revoke(id);
-        tokens.value = tokens.value.filter((t) => t.id !== id);
-        notifications.success('Token revoked.');
-    } catch {
-        notifications.error('Failed to revoke token.');
-    } finally {
-        revokingId.value = null;
-    }
+  revokingId.value = id;
+  try {
+    await tokenApi.revoke(id);
+    tokens.value = tokens.value.filter((t) => t.id !== id);
+    notifications.success('Token revoked.');
+  } catch {
+    notifications.error('Failed to revoke token.');
+  } finally {
+    revokingId.value = null;
+  }
 }
 
 async function copyToken(): Promise<void> {
-    await navigator.clipboard.writeText(newTokenValue.value);
-    copied.value = true;
-    setTimeout(() => {
-        copied.value = false;
-    }, 2000);
+  await navigator.clipboard.writeText(newTokenValue.value);
+  copied.value = true;
+  setTimeout(() => {
+    copied.value = false;
+  }, 2000);
 }
 
 onMounted(loadTokens);

@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="switcherRef"
-    class="relative"
-  >
+  <div ref="switcherRef" class="relative">
     <button
       class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5"
       @click="open = !open"
@@ -21,17 +18,12 @@
         :key="tenant.id"
         :class="[
           'w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center justify-between',
-          tenant.id === tenantStore.currentId
-            ? 'text-gray-900 font-medium'
-            : 'text-gray-600',
+          tenant.id === tenantStore.currentId ? 'text-gray-900 font-medium' : 'text-gray-600',
         ]"
         @click="switchTenant(tenant)"
       >
         <span>{{ tenant.name }}</span>
-        <Check
-          v-if="tenant.id === tenantStore.currentId"
-          class="h-4 w-4 text-gray-600"
-        />
+        <Check v-if="tenant.id === tenantStore.currentId" class="h-4 w-4 text-gray-600" />
       </button>
     </div>
   </div>
@@ -49,13 +41,13 @@ const open = ref(false);
 const switcherRef = ref<HTMLElement | null>(null);
 
 onClickOutside(switcherRef, () => {
-    open.value = false;
+  open.value = false;
 });
 
 function switchTenant(tenant: Tenant): void {
-    tenantStore.setCurrent(tenant);
-    open.value = false;
-    // Reload current page to fetch data for new tenant
-    window.location.reload();
+  tenantStore.setCurrent(tenant);
+  open.value = false;
+  // Reload current page to fetch data for new tenant
+  window.location.reload();
 }
 </script>

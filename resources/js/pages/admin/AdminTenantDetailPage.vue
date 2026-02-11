@@ -1,16 +1,8 @@
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <router-link
-        to="/admin/tenants"
-        class="text-gray-400 hover:text-gray-300"
-      >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <router-link to="/admin/tenants" class="text-gray-400 hover:text-gray-300">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -26,53 +18,39 @@
         v-if="tenant"
         :class="statusClass(tenant.status)"
         class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-      >{{ tenant.status }}</span>
+        >{{ tenant.status }}</span
+      >
     </div>
 
-    <div
-      v-if="isLoading"
-      class="text-sm text-gray-400"
-    >
-      Loading...
-    </div>
+    <div v-if="isLoading" class="text-sm text-gray-400">Loading...</div>
 
     <template v-else-if="tenant">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Info -->
         <div class="lg:col-span-2 space-y-6">
           <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-            <h2 class="text-lg font-semibold text-white mb-4">
-              Details
-            </h2>
+            <h2 class="text-lg font-semibold text-white mb-4">Details</h2>
             <dl class="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <dt class="text-gray-400">
-                  Name
-                </dt>
+                <dt class="text-gray-400">Name</dt>
                 <dd class="text-white">
                   {{ tenant.name }}
                 </dd>
               </div>
               <div>
-                <dt class="text-gray-400">
-                  Slug
-                </dt>
+                <dt class="text-gray-400">Slug</dt>
                 <dd class="text-white font-mono">
                   {{ tenant.slug }}
                 </dd>
               </div>
               <div>
-                <dt class="text-gray-400">
-                  Created
-                </dt>
+                <dt class="text-gray-400">Created</dt>
                 <dd class="text-white">
                   {{ formatDate(tenant.created_at) }}
                 </dd>
               </div>
               <div>
-                <dt class="text-gray-400">
-                  Plan
-                </dt>
+                <dt class="text-gray-400">Plan</dt>
                 <dd class="text-white">
                   {{ tenant.plan ?? 'None' }}
                 </dd>
@@ -82,19 +60,9 @@
 
           <!-- Members -->
           <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-            <h2 class="text-lg font-semibold text-white mb-4">
-              Members
-            </h2>
-            <div
-              v-if="members.length === 0"
-              class="text-sm text-gray-400"
-            >
-              No members.
-            </div>
-            <ul
-              v-else
-              class="space-y-2"
-            >
+            <h2 class="text-lg font-semibold text-white mb-4">Members</h2>
+            <div v-if="members.length === 0" class="text-sm text-gray-400">No members.</div>
+            <ul v-else class="space-y-2">
               <li
                 v-for="member in members"
                 :key="member.id"
@@ -122,22 +90,16 @@
         <!-- Usage Stats Sidebar -->
         <div class="space-y-6">
           <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-            <h2 class="text-lg font-semibold text-white mb-4">
-              Usage Stats
-            </h2>
+            <h2 class="text-lg font-semibold text-white mb-4">Usage Stats</h2>
             <dl class="space-y-3 text-sm">
               <div class="flex justify-between">
-                <dt class="text-gray-400">
-                  Users
-                </dt>
+                <dt class="text-gray-400">Users</dt>
                 <dd class="text-white font-bold">
                   {{ tenant.users_count ?? 0 }}
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-400">
-                  Customers
-                </dt>
+                <dt class="text-gray-400">Customers</dt>
                 <dd class="text-white font-bold">
                   {{ tenant.customers_count ?? 0 }}
                 </dd>
@@ -147,24 +109,26 @@
 
           <!-- Actions -->
           <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-            <h2 class="text-lg font-semibold text-white mb-4">
-              Actions
-            </h2>
+            <h2 class="text-lg font-semibold text-white mb-4">Actions</h2>
             <div class="space-y-2">
-              <button
+              <BaseButton
                 v-if="tenant.disabled_at"
+                variant="ghost"
+                size="sm"
                 class="w-full px-3 py-2 text-sm text-green-400 border border-green-500/30 rounded-md hover:bg-green-500/10"
                 @click="enableTenant"
               >
                 Enable
-              </button>
-              <button
+              </BaseButton>
+              <BaseButton
                 v-else
+                variant="ghost"
+                size="sm"
                 class="w-full px-3 py-2 text-sm text-red-400 border border-red-500/30 rounded-md hover:bg-red-500/10"
                 @click="disableTenant"
               >
                 Disable
-              </button>
+              </BaseButton>
             </div>
           </div>
         </div>
@@ -178,6 +142,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { adminTenantsApi } from '@/api';
 import { useNotificationStore } from '@/stores/notification';
+import BaseButton from '@/components/ui/BaseButton.vue';
 import type { AdminTenantDetail, User } from '@/api/types';
 
 const route = useRoute();
@@ -189,59 +154,59 @@ const members = ref<User[]>([]);
 const isLoading = ref(true);
 
 function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    });
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 function statusClass(status: string): string {
-    const map: Record<string, string> = {
-        active: 'bg-green-500/20 text-green-400',
-        inactive: 'bg-gray-500/20 text-gray-400',
-        suspended: 'bg-red-500/20 text-red-400',
-    };
-    return map[status] ?? 'bg-gray-500/20 text-gray-400';
+  const map: Record<string, string> = {
+    active: 'bg-green-500/20 text-green-400',
+    inactive: 'bg-gray-500/20 text-gray-400',
+    suspended: 'bg-red-500/20 text-red-400',
+  };
+  return map[status] ?? 'bg-gray-500/20 text-gray-400';
 }
 
 async function loadTenant(): Promise<void> {
-    try {
-        const [tenantRes, membersRes] = await Promise.all([
-            adminTenantsApi.show(tenantId),
-            adminTenantsApi.members(tenantId),
-        ]);
-        tenant.value = tenantRes.data.data;
-        members.value = membersRes.data.data;
-    } finally {
-        isLoading.value = false;
-    }
+  try {
+    const [tenantRes, membersRes] = await Promise.all([
+      adminTenantsApi.show(tenantId),
+      adminTenantsApi.members(tenantId),
+    ]);
+    tenant.value = tenantRes.data.data;
+    members.value = membersRes.data.data;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 async function disableTenant(): Promise<void> {
-    try {
-        await adminTenantsApi.disable(tenantId);
-        if (tenant.value) {
-            tenant.value.disabled_at = new Date().toISOString();
-            tenant.value.status = 'suspended';
-        }
-        notifications.success('Tenant disabled.');
-    } catch {
-        notifications.error('Failed to disable tenant.');
+  try {
+    await adminTenantsApi.disable(tenantId);
+    if (tenant.value) {
+      tenant.value.disabled_at = new Date().toISOString();
+      tenant.value.status = 'suspended';
     }
+    notifications.success('Tenant disabled.');
+  } catch {
+    notifications.error('Failed to disable tenant.');
+  }
 }
 
 async function enableTenant(): Promise<void> {
-    try {
-        await adminTenantsApi.enable(tenantId);
-        if (tenant.value) {
-            tenant.value.disabled_at = null;
-            tenant.value.status = 'active';
-        }
-        notifications.success('Tenant enabled.');
-    } catch {
-        notifications.error('Failed to enable tenant.');
+  try {
+    await adminTenantsApi.enable(tenantId);
+    if (tenant.value) {
+      tenant.value.disabled_at = null;
+      tenant.value.status = 'active';
     }
+    notifications.success('Tenant enabled.');
+  } catch {
+    notifications.error('Failed to enable tenant.');
+  }
 }
 
 onMounted(loadTenant);

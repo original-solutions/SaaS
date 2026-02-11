@@ -5,12 +5,7 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 justify-between">
           <div class="flex items-center gap-8">
-            <router-link
-              to="/admin"
-              class="text-xl font-bold text-white"
-            >
-              Admin
-            </router-link>
+            <router-link to="/admin" class="text-xl font-bold text-white"> Admin </router-link>
             <div class="hidden sm:flex items-center gap-4">
               <router-link
                 v-for="item in navItems"
@@ -25,10 +20,7 @@
           </div>
 
           <div class="flex items-center gap-4">
-            <router-link
-              to="/"
-              class="text-sm text-gray-300 hover:text-white"
-            >
+            <router-link to="/" class="text-sm text-gray-300 hover:text-white">
               &larr; Back to App
             </router-link>
             <span class="text-sm text-gray-400">
@@ -52,8 +44,8 @@ import { useAuthStore } from '@/stores/auth';
 const authStore = useAuthStore();
 
 const navItems = [
-    { to: '/admin', label: 'Dashboard' },
-    { to: '/admin/tenants', label: 'Tenants' },
-    { to: '/admin/users', label: 'Users' },
+  { to: '/admin', label: 'Dashboard' },
+  { to: '/admin/tenants', label: 'Tenants' },
+  { to: '/admin/users', label: 'Users' },
 ];
 </script>

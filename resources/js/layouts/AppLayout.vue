@@ -1,20 +1,12 @@
 <template>
   <ImpersonationBanner />
-  <div
-    class="min-h-screen bg-gray-50"
-    :class="{ 'pt-10': authStore.isImpersonating }"
-  >
+  <div class="min-h-screen bg-gray-50" :class="{ 'pt-10': authStore.isImpersonating }">
     <!-- Top navigation -->
     <nav class="bg-white border-b border-gray-200">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 justify-between">
           <div class="flex items-center gap-8">
-            <router-link
-              to="/"
-              class="text-xl font-bold text-gray-900"
-            >
-              SaaS
-            </router-link>
+            <router-link to="/" class="text-xl font-bold text-gray-900"> SaaS </router-link>
             <div class="hidden sm:flex items-center gap-4">
               <router-link
                 v-for="item in navItems"
@@ -33,10 +25,7 @@
             <TenantSwitcher v-if="tenantStore.all.length > 1" />
 
             <!-- User Menu -->
-            <div
-              ref="menuRef"
-              class="relative"
-            >
+            <div ref="menuRef" class="relative">
               <button
                 class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
                 @click="showMenu = !showMenu"
@@ -64,7 +53,7 @@
                 >
                   Admin Panel
                 </router-link>
-                <hr class="my-1">
+                <hr class="my-1" />
                 <button
                   class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
                   @click="handleLogout"
@@ -103,17 +92,17 @@ const showMenu = ref(false);
 const menuRef = ref<HTMLElement | null>(null);
 
 onClickOutside(menuRef, () => {
-    showMenu.value = false;
+  showMenu.value = false;
 });
 
 const navItems = [
-    { to: '/', label: 'Dashboard' },
-    { to: '/customers', label: 'Customers' },
+  { to: '/', label: 'Dashboard' },
+  { to: '/customers', label: 'Customers' },
 ];
 
 async function handleLogout(): Promise<void> {
-    showMenu.value = false;
-    await authStore.logout();
-    router.push({ name: 'login' });
+  showMenu.value = false;
+  await authStore.logout();
+  router.push({ name: 'login' });
 }
 </script>

@@ -3,17 +3,17 @@ import { useAuthStore } from '@/stores/auth';
 import { useTenantStore } from '@/stores/tenant';
 import { useNotificationStore } from '@/stores/notification';
 import {
-    subscribeTenantChannel,
-    subscribeTenantPresence,
-    subscribeUserChannel,
-    leaveTenantChannel,
-    leaveTenantPresence,
-    leaveUserChannel,
+  subscribeTenantChannel,
+  subscribeTenantPresence,
+  subscribeUserChannel,
+  leaveTenantChannel,
+  leaveTenantPresence,
+  leaveUserChannel,
 } from '@/realtime/channels';
 
 interface OnlineMember {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
 
 /**
@@ -25,67 +25,67 @@ interface OnlineMember {
  * - User channel for personal notifications
  */
 export function useRealtime() {
-    const authStore = useAuthStore();
-    const tenantStore = useTenantStore();
-    const notifications = useNotificationStore();
+  const authStore = useAuthStore();
+  const tenantStore = useTenantStore();
+  const notifications = useNotificationStore();
 
-    const onlineMembers = ref<OnlineMember[]>([]);
-    let tenantId: number | null = null;
-    let userId: number | null = null;
+  const onlineMembers = ref<OnlineMember[]>([]);
+  let tenantId: number | null = null;
+  let userId: number | null = null;
 
-    function connect(): void {
-        tenantId = tenantStore.currentId;
-        userId = authStore.user?.id ?? null;
+  function connect(): void {
+    tenantId = tenantStore.currentId;
+    userId = authStore.user?.id ?? null;
 
-        if (tenantId) {
-            // Tenant channel — entity updates
-            subscribeTenantChannel(tenantId)
-                .listen('.CustomerUpdated', (data: { customer: { id: number; name: string } }) => {
-                    notifications.info(`Customer "${data.customer.name}" was updated.`);
-                })
-                .listen('.ImportCompleted', (data: { import: { id: number; status: string } }) => {
-                    notifications.success(`Import #${data.import.id} ${data.import.status}.`);
-                });
+    if (tenantId) {
+      // Tenant channel — entity updates
+      subscribeTenantChannel(tenantId)
+        .listen('.CustomerUpdated', (data: { customer: { id: number; name: string } }) => {
+          notifications.info(`Customer "${data.customer.name}" was updated.`);
+        })
+        .listen('.ImportCompleted', (data: { import: { id: number; status: string } }) => {
+          notifications.success(`Import #${data.import.id} ${data.import.status}.`);
+        });
 
-            // Presence channel — online members
-            const presence = subscribeTenantPresence(tenantId);
-            presence
-                .here((members: OnlineMember[]) => {
-                    onlineMembers.value = members;
-                })
-                .joining((member: OnlineMember) => {
-                    onlineMembers.value.push(member);
-                })
-                .leaving((member: OnlineMember) => {
-                    onlineMembers.value = onlineMembers.value.filter((m) => m.id !== member.id);
-                });
-        }
-
-        if (userId) {
-            // User channel — personal notifications
-            subscribeUserChannel(userId).listen(
-                '.UserNotification',
-                (data: { type?: string; message?: string }) => {
-                    notifications.info(data.message ?? 'You have a new notification.');
-                },
-            );
-        }
+      // Presence channel — online members
+      const presence = subscribeTenantPresence(tenantId);
+      presence
+        .here((members: OnlineMember[]) => {
+          onlineMembers.value = members;
+        })
+        .joining((member: OnlineMember) => {
+          onlineMembers.value.push(member);
+        })
+        .leaving((member: OnlineMember) => {
+          onlineMembers.value = onlineMembers.value.filter((m) => m.id !== member.id);
+        });
     }
 
-    function disconnect(): void {
-        if (tenantId) {
-            leaveTenantChannel(tenantId);
-            leaveTenantPresence(tenantId);
+    if (userId) {
+      // User channel — personal notifications
+      subscribeUserChannel(userId).listen(
+        '.UserNotification',
+        (data: { type?: string; message?: string }) => {
+          notifications.info(data.message ?? 'You have a new notification.');
         }
-        if (userId) {
-            leaveUserChannel(userId);
-        }
+      );
     }
+  }
 
-    onMounted(() => connect());
-    onUnmounted(() => disconnect());
+  function disconnect(): void {
+    if (tenantId) {
+      leaveTenantChannel(tenantId);
+      leaveTenantPresence(tenantId);
+    }
+    if (userId) {
+      leaveUserChannel(userId);
+    }
+  }
 
-    return {
-        onlineMembers,
-    };
+  onMounted(() => connect());
+  onUnmounted(() => disconnect());
+
+  return {
+    onlineMembers,
+  };
 }

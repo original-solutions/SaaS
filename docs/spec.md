@@ -13,8 +13,8 @@ A production-grade, opinionated SaaS foundation that can be reused across multip
 
 - All endpoints are versioned under `/api/v1/*` (recommended)
 - Versioning rules:
-    - Non-breaking changes allowed within v1
-    - Breaking changes create `/api/v2/*`
+  - Non-breaking changes allowed within v1
+  - Breaking changes create `/api/v2/*`
 
 ### 1.1 Application Model
 
@@ -29,8 +29,8 @@ A production-grade, opinionated SaaS foundation that can be reused across multip
 - Tenant = Organisation / Workspace
 - Users can belong to multiple tenants
 - Pivot table: `tenant_user`
-    - role
-    - joined_at
+  - role
+  - joined_at
 
 ### 1.3 Roles
 
@@ -77,8 +77,8 @@ A production-grade, opinionated SaaS foundation that can be reused across multip
 - Access tokens are **never persisted** (no localStorage/sessionStorage/IndexedDB).
 - Access tokens are **cleared on reload**; reload triggers the refresh flow (if refresh token present) or re-auth if not.
 - Persist **refresh tokens** using a **token-only** approach (required):
-    - Refresh token stored client-side with **at-rest obfuscation** (best-effort) + strict CSP + rotation + reuse detection
-    - If this template is mainly for internal/owned products, it is acceptable to require more frequent re-authentication to reduce refresh token lifetime client-side
+  - Refresh token stored client-side with **at-rest obfuscation** (best-effort) + strict CSP + rotation + reuse detection
+  - If this template is mainly for internal/owned products, it is acceptable to require more frequent re-authentication to reduce refresh token lifetime client-side
 
 **Refresh flow (must be implemented and tested):**
 
@@ -97,32 +97,32 @@ A production-grade, opinionated SaaS foundation that can be reused across multip
 **Tables (required):**
 
 - `device_sessions`
-    - `id`
-    - `user_id`
-    - `device_label` (string, nullable)
-    - `ip_address` (string, nullable)
-    - `user_agent` (text, nullable)
-    - `last_used_at` (timestamp, nullable)
-    - `revoked_at` (timestamp, nullable)
-    - `created_at`, `updated_at`
+  - `id`
+  - `user_id`
+  - `device_label` (string, nullable)
+  - `ip_address` (string, nullable)
+  - `user_agent` (text, nullable)
+  - `last_used_at` (timestamp, nullable)
+  - `revoked_at` (timestamp, nullable)
+  - `created_at`, `updated_at`
 - `refresh_tokens`
-    - `id`
-    - `user_id`
-    - `device_session_id`
-    - `token_hash` (string, unique)
-    - `expires_at` (timestamp)
-    - `revoked_at` (timestamp, nullable)
-    - `replaced_by_id` (nullable, self FK)
-    - `last_used_at` (timestamp, nullable)
-    - `created_at`
+  - `id`
+  - `user_id`
+  - `device_session_id`
+  - `token_hash` (string, unique)
+  - `expires_at` (timestamp)
+  - `revoked_at` (timestamp, nullable)
+  - `replaced_by_id` (nullable, self FK)
+  - `last_used_at` (timestamp, nullable)
+  - `created_at`
 
 **Reuse detection behaviour (required):**
 
 - If a refresh token is presented that is already **revoked** or already **used/replaced**, treat as reuse.
 - Response:
-    - Immediately **revoke the entire device session chain** (revoke all refresh tokens in that session and invalidate related access tokens)
-    - Create a high-severity **security event** (audit + admin notification)
-    - Optionally (config): revoke **all** user device sessions if you prefer a stricter stance
+  - Immediately **revoke the entire device session chain** (revoke all refresh tokens in that session and invalidate related access tokens)
+  - Create a high-severity **security event** (audit + admin notification)
+  - Optionally (config): revoke **all** user device sessions if you prefer a stricter stance
 
 **Revocation rules:**
 
@@ -152,18 +152,18 @@ A production-grade, opinionated SaaS foundation that can be reused across multip
 
 - Vue templates rely on automatic escaping by default; **avoid** `v-html`.
 - If rich text is needed:
-    - sanitise on write using an allowlist (e.g., basic formatting only)
-    - re-sanitise on render as defence-in-depth
-    - store both raw + sanitised versions if required for auditing
+  - sanitise on write using an allowlist (e.g., basic formatting only)
+  - re-sanitise on render as defence-in-depth
+  - store both raw + sanitised versions if required for auditing
 - Input validation for any user-supplied HTML/markdown.
 - Dependency hygiene:
-    - lockfiles committed
-    - routine dependency audit (CI job)
-    - prohibit abandoned packages for auth/crypto/sanitisation
+  - lockfiles committed
+  - routine dependency audit (CI job)
+  - prohibit abandoned packages for auth/crypto/sanitisation
 - Strict content handling:
-    - no inline scripts
-    - no dynamic script injection
-    - avoid `eval`/Function constructors
+  - no inline scripts
+  - no dynamic script injection
+  - avoid `eval`/Function constructors
 
 ---
 
@@ -217,20 +217,20 @@ All other tenant-scoped endpoints must return **400** with a clear error: `TENAN
 #### 3.2.1 Invite Edge Cases & Rules (Required)
 
 - Invited email already exists:
-    - If the user exists, accepting the invite attaches membership to the tenant.
+  - If the user exists, accepting the invite attaches membership to the tenant.
 - Invite sent to an email different from the currently logged-in user:
-    - Do **not** allow acceptance while logged in as a different email.
-    - Provide a “switch account” or “log out and continue” flow.
+  - Do **not** allow acceptance while logged in as a different email.
+  - Provide a “switch account” or “log out and continue” flow.
 - Expiry + resend:
-    - Invites expire (configurable, e.g. 7 days)
-    - Resend generates a new token and invalidates the old one
-    - Rate limit resends per inviter + per tenant
+  - Invites expire (configurable, e.g. 7 days)
+  - Resend generates a new token and invalidates the old one
+  - Rate limit resends per inviter + per tenant
 - Duplicate invites:
-    - If a pending invite exists for (tenant, email), resend instead of creating another record
+  - If a pending invite exists for (tenant, email), resend instead of creating another record
 - Email verification:
-    - Require verified email before accepting invite (or verify during accept flow)
+  - Require verified email before accepting invite (or verify during accept flow)
 - Role changes:
-    - Allow inviter (Owner/Admin) to change role on a pending invite
+  - Allow inviter (Owner/Admin) to change role on a pending invite
 
 ### 3.3 Tenant Lifecycle
 
@@ -243,14 +243,14 @@ All other tenant-scoped endpoints must return **400** with a clear error: `TENAN
 
 - User export personal data (profile + memberships + audit events where actor)
 - User delete account:
-    - If user is the **sole Owner** of a tenant, block deletion until ownership transferred
-    - On delete, remove memberships and revoke all tokens/device sessions
-    - Decide retention of authored content (notes/activity):
-        - either anonymise actor fields, or retain user_id for audit (policy decision)
+  - If user is the **sole Owner** of a tenant, block deletion until ownership transferred
+  - On delete, remove memberships and revoke all tokens/device sessions
+  - Decide retention of authored content (notes/activity):
+    - either anonymise actor fields, or retain user_id for audit (policy decision)
 - User lock/unlock (admin)
 - User email change flow:
-    - require re-verification
-    - revoke tokens optionally (recommended)
+  - require re-verification
+  - revoke tokens optionally (recommended)
 
 ---
 
@@ -265,8 +265,8 @@ All other tenant-scoped endpoints must return **400** with a clear error: `TENAN
 
 - Start with roles (Owner/Admin/Member/Read-only)
 - Extension path to permissions/abilities later:
-    - `permissions` + `role_permissions`, or
-    - config-driven abilities with overrides
+  - `permissions` + `role_permissions`, or
+  - config-driven abilities with overrides
 - Keep policy checks structured so introducing permissions later is low-impact
 
 ---
@@ -401,9 +401,9 @@ Base components to ship in template:
 
 - Define retention policy per tenant (default configurable)
 - Activity snapshots may contain PII:
-    - support redaction rules for specific fields
-    - support tenant export
-    - support tenant deletion workflow (hard delete after delay)
+  - support redaction rules for specific fields
+  - support tenant export
+  - support tenant deletion workflow (hard delete after delay)
 - Document what is retained after tenant deletion (e.g., billing events for compliance)
 
 ---
@@ -416,9 +416,9 @@ Base components to ship in template:
 - Automated DB backups (frequency + retention)
 - File storage backups (if not using managed versioning)
 - Restore runbook:
-    - restore DB to point-in-time
-    - restore files
-    - smoke test checklist
+  - restore DB to point-in-time
+  - restore files
+  - smoke test checklist
 - DR objectives documented: RPO / RTO
 
 ### 9.0A Zero-Downtime Deploy & Release Checklist (Required)
@@ -436,14 +436,14 @@ Base components to ship in template:
 - Verify scheduler is running
 - Health endpoint check (HTTP 200 + DB + queue + broadcast)
 - Smoke tests:
-    - login
-    - tenant switch
-    - CRUD create/update
-    - refresh token cycle
-    - admin impersonation
+  - login
+  - tenant switch
+  - CRUD create/update
+  - refresh token cycle
+  - admin impersonation
 - Rollback plan:
-    - application rollback
-    - migration rollback strategy (avoid irreversible migrations without plan)
+  - application rollback
+  - migration rollback strategy (avoid irreversible migrations without plan)
 
 ### 9.1 Queue
 
@@ -494,10 +494,10 @@ Base components to ship in template:
 - Subscription status (stub)
 - Usage stats
 - Actions:
-    - Disable / enable
-    - Force logout
-    - Export data
-    - Delete tenant
+  - Disable / enable
+  - Force logout
+  - Export data
+  - Delete tenant
 
 ### 10.4 User Management
 
@@ -506,9 +506,9 @@ Base components to ship in template:
 - Membership overview
 - Sessions + login history
 - Actions:
-    - Lock / unlock
-    - Reset password
-    - Revoke sessions
+  - Lock / unlock
+  - Reset password
+  - Revoke sessions
 
 ### 10.5 Support Tools
 
@@ -845,28 +845,28 @@ A single generator command that outputs a complete, consistent CRUD slice across
 Generates:
 
 - Migration:
-    - `id`, `tenant_id` (if tenant-scoped), timestamps
-    - optional `deleted_at`
-    - fields specified via `--fields`
+  - `id`, `tenant_id` (if tenant-scoped), timestamps
+  - optional `deleted_at`
+  - fields specified via `--fields`
 - Model:
-    - fillable guarded defaults
-    - casts for enums/dates
-    - tenant scope applied (if tenant-scoped)
+  - fillable guarded defaults
+  - casts for enums/dates
+  - tenant scope applied (if tenant-scoped)
 - Policy:
-    - `viewAny`, `view`, `create`, `update`, `delete`, `restore`, `forceDelete`
+  - `viewAny`, `view`, `create`, `update`, `delete`, `restore`, `forceDelete`
 - Form Requests:
-    - `Store<Name>Request`, `Update<Name>Request`
+  - `Store<Name>Request`, `Update<Name>Request`
 - Controller:
-    - REST endpoints + consistent responses
+  - REST endpoints + consistent responses
 - Service:
-    - `create`, `update`, `delete` methods
-    - hooks for activity log and events
+  - `create`, `update`, `delete` methods
+  - hooks for activity log and events
 - Routes:
-    - `GET /api/<resources>`
-    - `GET /api/<resources>/{id}`
-    - `POST /api/<resources>`
-    - `PUT /api/<resources>/{id}`
-    - `DELETE /api/<resources>/{id}`
+  - `GET /api/<resources>`
+  - `GET /api/<resources>/{id}`
+  - `POST /api/<resources>`
+  - `PUT /api/<resources>/{id}`
+  - `DELETE /api/<resources>/{id}`
 
 ### 14B.4 Outputs (Frontend)
 

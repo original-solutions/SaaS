@@ -15,10 +15,7 @@
           >
             <span class="inline-flex items-center gap-1">
               {{ col.label ?? '' }}
-              <span
-                v-if="col.sortable && sortKey === col.key"
-                class="text-muted-foreground/70"
-              >
+              <span v-if="col.sortable && sortKey === col.key" class="text-muted-foreground/70">
                 {{ sortDir === 'asc' ? '↑' : '↓' }}
               </span>
             </span>
@@ -28,37 +25,22 @@
 
       <tbody class="divide-y divide-border">
         <tr v-if="loading">
-          <td
-            :colspan="columns.length"
-            class="px-6 py-8 text-center text-sm text-muted-foreground"
-          >
+          <td :colspan="columns.length" class="px-6 py-8 text-center text-sm text-muted-foreground">
             Loading...
           </td>
         </tr>
         <tr v-else-if="rows.length === 0">
-          <td
-            :colspan="columns.length"
-            class="px-6 py-8 text-center text-sm text-muted-foreground"
-          >
+          <td :colspan="columns.length" class="px-6 py-8 text-center text-sm text-muted-foreground">
             {{ emptyText }}
           </td>
         </tr>
-        <tr
-          v-for="row in rows"
-          v-else
-          :key="getRowKey(row)"
-          class="hover:bg-muted/30"
-        >
+        <tr v-for="row in rows" v-else :key="getRowKey(row)" class="hover:bg-muted/30">
           <td
             v-for="col in columns"
             :key="col.key"
             :class="['px-6 py-4 text-sm text-foreground', col.class]"
           >
-            <slot
-              :name="`cell-${col.key}`"
-              :row="row"
-              :value="row[col.key]"
-            >
+            <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
               {{ row[col.key] ?? '—' }}
             </slot>
           </td>
@@ -70,47 +52,47 @@
 
 <script setup lang="ts">
 export type DataTableColumn = {
-    key: string;
-    label?: string;
-    sortable?: boolean;
-    class?: string;
-    headerClass?: string;
+  key: string;
+  label?: string;
+  sortable?: boolean;
+  class?: string;
+  headerClass?: string;
 };
 
 const props = withDefaults(
-    defineProps<{
-        rows: Array<Record<string, any>>;
-        columns: DataTableColumn[];
-        loading?: boolean;
-        emptyText?: string;
-        sortKey?: string;
-        sortDir?: 'asc' | 'desc';
-        rowKey?: string | ((row: Record<string, any>) => string | number);
-    }>(),
-    {
-        loading: false,
-        emptyText: 'No results found.',
-        sortKey: undefined,
-        sortDir: undefined,
-        rowKey: 'id',
-    },
+  defineProps<{
+    rows: Array<Record<string, any>>;
+    columns: DataTableColumn[];
+    loading?: boolean;
+    emptyText?: string;
+    sortKey?: string;
+    sortDir?: 'asc' | 'desc';
+    rowKey?: string | ((row: Record<string, any>) => string | number);
+  }>(),
+  {
+    loading: false,
+    emptyText: 'No results found.',
+    sortKey: undefined,
+    sortDir: undefined,
+    rowKey: 'id',
+  }
 );
 
 defineEmits<{
-    sort: [key: string];
+  sort: [key: string];
 }>();
 
 function getRowKey(row: Record<string, any>): string | number {
-    if (typeof props.rowKey === 'function') {
-        return props.rowKey(row);
-    }
+  if (typeof props.rowKey === 'function') {
+    return props.rowKey(row);
+  }
 
-    const key = props.rowKey;
+  const key = props.rowKey;
 
-    if (typeof row[key] === 'string' || typeof row[key] === 'number') {
-        return row[key];
-    }
+  if (typeof row[key] === 'string' || typeof row[key] === 'number') {
+    return row[key];
+  }
 
-    return JSON.stringify(row);
+  return JSON.stringify(row);
 }
 </script>
