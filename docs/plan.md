@@ -40,8 +40,8 @@ Each phase follows the cycle: **write Pest tests → implement to green → run 
 2. **Install frontend packages** — `vue@3`, `vue-router@4`, `pinia`, `@vitejs/plugin-vue`, `typescript`, `vue-tsc`, `shadcn-vue`, `radix-vue`, `@tanstack/vue-table`, `vee-validate`, `zod`, `lucide-vue-next`, `prettier`, `eslint`, `eslint-plugin-vue`, `@typescript-eslint/parser`. Convert `resources/js/app.js` → `app.ts`.
 3. **Configure Vite** — Add Vue plugin + TypeScript support in `vite.config.js`. Add `tsconfig.json`.
 4. **[SPATIE] Publish and configure Spatie configs:**
-   - `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"` → creates `config/permission.php`. Set `'teams' => true`, `'team_foreign_key' => 'tenant_id'`. Set guard to `api` (Sanctum).
-   - `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider"` → creates `config/activitylog.php`. Set `'activity_model' => \App\Models\Activity::class`, configure `delete_records_older_than_days`.
+    - `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"` → creates `config/permission.php`. Set `'teams' => true`, `'team_foreign_key' => 'tenant_id'`. Set guard to `api` (Sanctum).
+    - `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider"` → creates `config/activitylog.php`. Set `'activity_model' => \App\Models\Activity::class`, configure `delete_records_older_than_days`.
 5. **Create backend folder structure** per spec §14A.1 — directories under `app/` for `Actions/`, `Services/`, `DTO/`, `Enums/`, `Support/Auth/`, `Support/Tenancy/`, `Support/Impersonation/`, `Support/Query/`, `Events/`, `Listeners/`, `Notifications/`, `Jobs/`, `Rules/`, `Policies/`, `Http/Middleware/`, `Http/Requests/Api/V1/`, `Http/Controllers/Api/V1/`, `Http/Controllers/Admin/`.
 6. **Create frontend folder structure** per spec §14A.2 — `resources/js/router/`, `api/`, `auth/`, `tenancy/`, `layouts/`, `components/ui/`, `components/shared/`, `pages/auth/`, `pages/app/`, `pages/admin/`, `stores/`, `realtime/`.
 7. **Create route files** — `routes/api_v1.php` and `routes/admin.php`. Register in `bootstrap/app.php` with `/api/v1` prefix and `/admin` prefix respectively.
@@ -154,6 +154,7 @@ Each phase follows the cycle: **write Pest tests → implement to green → run 
 ### Config
 
 `config/saas.php`:
+
 - `access_token_ttl` (15 min)
 - `refresh_token_ttl` (7 days)
 - `revoke_all_on_reuse` (bool)
@@ -251,10 +252,10 @@ Spatie IS the authorization engine.
 ### Policies
 
 - `TenantPolicy` — uses `$user->hasRole('owner')` and `$user->hasRole(['owner', 'admin'])` for checks (automatically scoped to current tenant via middleware). Example:
-  - `update`: `$user->hasRole(['owner', 'admin'])`
-  - `delete`: `$user->hasRole('owner')`
-  - `viewAny`/`view`: `$user->hasAnyRole(['owner', 'admin', 'member', 'readonly'])`
-  - `create`: `$user->hasAnyRole(['owner', 'admin', 'member'])`
+    - `update`: `$user->hasRole(['owner', 'admin'])`
+    - `delete`: `$user->hasRole('owner')`
+    - `viewAny`/`view`: `$user->hasAnyRole(['owner', 'admin', 'member', 'readonly'])`
+    - `create`: `$user->hasAnyRole(['owner', 'admin', 'member'])`
 
 ### Gates
 
@@ -264,6 +265,7 @@ Spatie IS the authorization engine.
 ### [SPATIE] RBAC Extension Path (§4.1)
 
 Document in `config/permission.php` comments AND `config/saas.php`:
+
 1. Current setup uses roles only.
 2. To add granular permissions: create `Permission` records (e.g., `customers.create`, `customers.delete`).
 3. Assign permissions to roles via `$role->givePermissionTo('customers.create')`.
@@ -341,7 +343,7 @@ Document in `config/permission.php` comments AND `config/saas.php`:
 ### [SPATIE] Migrations
 
 1. **Activity log** — publish Spatie's migration, customise to add: `event` (string, nullable), `batch_uuid` (uuid, nullable, indexed), `tenant_id` (unsignedBigInteger, nullable, indexed), `impersonator_user_id` (unsignedBigInteger, nullable), `request_id` (uuid, nullable, indexed), `ip_address` (string(45), nullable), `user_agent` (text, nullable). Spatie's base columns remain as-is.
-   - **Schema mapping to spec §A3.AL:** `causer_id` = spec's `actor_user_id`, `event` = spec's `action`, `properties->old` = spec's `before`, `properties->attributes` = spec's `after`, additional `properties` keys = spec's `meta`. Custom columns cover `tenant_id`, `impersonator_user_id`, `ip_address`, `user_agent`, `request_id`.
+    - **Schema mapping to spec §A3.AL:** `causer_id` = spec's `actor_user_id`, `event` = spec's `action`, `properties->old` = spec's `before`, `properties->attributes` = spec's `after`, additional `properties` keys = spec's `meta`. Custom columns cover `tenant_id`, `impersonator_user_id`, `ip_address`, `user_agent`, `request_id`.
 2. `notifications` table — Laravel database notifications migration.
 3. `notification_preferences` table — per §A3.NP.
 4. `feature_flags` table — per §A5.FF.
@@ -350,13 +352,14 @@ Document in `config/permission.php` comments AND `config/saas.php`:
 ### [SPATIE] Custom Activity Model
 
 `app/Models/Activity.php`:
+
 - Extends `Spatie\Activitylog\Models\Activity`.
 - `booted()` method with `creating` callback that auto-fills:
-  - `tenant_id` from `TenantContext`
-  - `ip_address` from `request()->ip()`
-  - `user_agent` from `request()->userAgent()`
-  - `request_id` from current correlation ID
-  - `impersonator_user_id` from impersonation context
+    - `tenant_id` from `TenantContext`
+    - `ip_address` from `request()->ip()`
+    - `user_agent` from `request()->userAgent()`
+    - `request_id` from current correlation ID
+    - `impersonator_user_id` from impersonation context
 - Tenant global scope that filters by current tenant when context is set (allows platform-level logs when no tenant).
 - Relationships: `tenant()`, `impersonator()`.
 - PII redaction: `scopeRedacted()` that strips sensitive fields from `properties` JSON based on configurable denylist.
@@ -365,12 +368,14 @@ Document in `config/permission.php` comments AND `config/saas.php`:
 ### [SPATIE] LogsActivity on Models
 
 All tenant-scoped models use `LogsActivity` trait with `getActivitylogOptions()`:
+
 - `LogOptions::defaults()->logFillable()->logOnlyDirty()->dontSubmitEmptyLogs()`
 - `tapActivity()` method to set `tenant_id` from model's own `tenant_id`.
 
 ### [SPATIE] ActivityLogService
 
 `app/Services/ActivityLogService.php`:
+
 - **Thin wrapper** around Spatie's `activity()` helper for manual logging.
 - Methods: `log(string $event, ?Model $subject, array $properties = [])`.
 - Auto-resolves causer, handles impersonator context, applies PII redaction.
@@ -511,6 +516,7 @@ All tenant-scoped models use `LogsActivity` trait with `getActivitylogOptions()`
 ### Routes (in `routes/admin.php`)
 
 All under `/admin/api/v1/` prefix, behind `SuperAdminOnly` middleware:
+
 - Tenant management CRUD + actions
 - User management CRUD + actions
 - Admin notes CRUD
@@ -559,6 +565,7 @@ All under `/admin/api/v1/` prefix, behind `SuperAdminOnly` middleware:
 ### Middleware
 
 `EnsureSubscribed` — **[PROMOTED]** explicit read-only mode logic:
+
 - `trialing` / `active` → full access.
 - `past_due` → check `grace_period_ends_at`: in grace → full access; expired → **read-only**.
 - `canceled` / `unpaid` → **read-only**.
@@ -578,6 +585,7 @@ All under `/admin/api/v1/` prefix, behind `SuperAdminOnly` middleware:
 ### Rate Limiters
 
 Registered in `AppServiceProvider` or `bootstrap/app.php`:
+
 - `auth-login`: 10/min per IP + 5/min per email
 - `auth-refresh`: 30/min per device_session + 60/min per user
 - `auth-logout`: 30/min per user
@@ -818,21 +826,21 @@ Full setup — Super Admin, demo tenant with Owner + Member + Read-only users, C
 
 1. **One-command setup** — `composer run setup`: copy `.env.example` → `.env`, `php artisan key:generate`, `php artisan migrate --seed`, `npm install`, `npm run build`.
 2. **CI pipeline** — GitHub Actions workflow:
-   - Install → `vendor/bin/pint --test` → `php artisan test` → `npm run build`.
-   - **[NEW]** `composer audit` step — fails on known vulnerabilities.
-   - **[NEW]** `npm audit --audit-level=high` step — fails on high/critical JS vulnerabilities.
-   - **[NEW]** Dependency freshness check — report (non-blocking) on packages with no updates in >12 months for auth/crypto/sanitisation categories.
-   - (Optional) Static analysis step.
+    - Install → `vendor/bin/pint --test` → `php artisan test` → `npm run build`.
+    - **[NEW]** `composer audit` step — fails on known vulnerabilities.
+    - **[NEW]** `npm audit --audit-level=high` step — fails on high/critical JS vulnerabilities.
+    - **[NEW]** Dependency freshness check — report (non-blocking) on packages with no updates in >12 months for auth/crypto/sanitisation categories.
+    - (Optional) Static analysis step.
 3. **[NEW] Abandoned package policy** — `docs/DEPENDENCY_POLICY.md`: packages for auth, crypto, or HTML sanitisation must have had a release within 12 months. CI flags violations.
 4. **Data retention** — Configurable per-tenant for activity logs. `artisan saas:prune-activity-logs` command. **[NEW]** Document in `config/saas.php` what's retained after tenant hard-deletion (billing/compliance logs preserved, all else removed).
 5. **Backup config** — Document backup strategy (DB + files), restore runbook, RPO/RTO objectives in `docs/ops/`.
 6. **Deploy checklist** — Zero-downtime deploy steps per §9.0A in `docs/ops/deploy.md`.
 7. **Final security hardening pass:**
-   - Verify CSP nonce implementation end-to-end.
-   - **[NEW]** Grep for `v-html` usage — must be zero.
-   - Verify lockfiles (`composer.lock`, `package-lock.json`) committed.
-   - **[NEW]** Verify ESLint disallows `eval`, `new Function`.
-   - Verify no `eval`/`Function` constructors in frontend.
+    - Verify CSP nonce implementation end-to-end.
+    - **[NEW]** Grep for `v-html` usage — must be zero.
+    - Verify lockfiles (`composer.lock`, `package-lock.json`) committed.
+    - **[NEW]** Verify ESLint disallows `eval`, `new Function`.
+    - Verify no `eval`/`Function` constructors in frontend.
 
 ### Tests
 
@@ -847,11 +855,13 @@ Full setup — Super Admin, demo tenant with Owner + Member + Read-only users, C
 ## Verification Protocol
 
 **At each phase boundary:**
+
 1. `php artisan test --filter=<PhaseTestFiles>` — all phase tests green.
 2. `vendor/bin/pint --dirty` — code style clean.
 3. `npm run build` — frontend compiles (from Phase 11+).
 
 **Final verification:**
+
 - `php artisan test` — full suite green (~370+ tests).
 - `npm run build` — no TS/Vue errors.
 - `vendor/bin/pint --test` — passes.
@@ -861,53 +871,53 @@ Full setup — Super Admin, demo tenant with Owner + Member + Read-only users, C
 
 ## Key Decisions
 
-| Decision | Choice | Rationale |
-|---|---|---|
-| Phasing | Single plan, 14 sequenced phases | Full visibility, sequential dependencies |
-| Frontend language | TypeScript | Spec folder structure implies `.ts` files |
-| Test database | MySQL | Production parity over SQLite speed |
-| Tenant identification | Header-only (`X-Tenant-ID`) | SPA model; subdomain unnecessary for template |
-| RBAC engine | **spatie/laravel-permission v6** | Battle-tested, teams feature maps to tenants, zero-schema extension to permissions |
-| Audit engine | **spatie/laravel-activitylog v4** | Auto before/after snapshots, extensible pipeline, custom Activity model |
-| `tenant_user.role` column | Retained alongside Spatie roles | Spec schema compliance + query convenience; synced via service layer |
-| Content retention on delete | Configurable (`anonymise` / `retain`) | Policy decision exposed in config |
-| Post-deletion retention | Billing/compliance logs preserved | Documented in config |
-| RBAC extension path | Documented, zero schema change needed | Spatie's `permissions` + `role_has_permissions` tables exist from Phase 3 |
-| ID strategy | Configurable (`bigint` default, `uuid`/`ulid` optional) | One-config switch via trait |
+| Decision                    | Choice                                                  | Rationale                                                                          |
+| --------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Phasing                     | Single plan, 14 sequenced phases                        | Full visibility, sequential dependencies                                           |
+| Frontend language           | TypeScript                                              | Spec folder structure implies `.ts` files                                          |
+| Test database               | MySQL                                                   | Production parity over SQLite speed                                                |
+| Tenant identification       | Header-only (`X-Tenant-ID`)                             | SPA model; subdomain unnecessary for template                                      |
+| RBAC engine                 | **spatie/laravel-permission v6**                        | Battle-tested, teams feature maps to tenants, zero-schema extension to permissions |
+| Audit engine                | **spatie/laravel-activitylog v4**                       | Auto before/after snapshots, extensible pipeline, custom Activity model            |
+| `tenant_user.role` column   | Retained alongside Spatie roles                         | Spec schema compliance + query convenience; synced via service layer               |
+| Content retention on delete | Configurable (`anonymise` / `retain`)                   | Policy decision exposed in config                                                  |
+| Post-deletion retention     | Billing/compliance logs preserved                       | Documented in config                                                               |
+| RBAC extension path         | Documented, zero schema change needed                   | Spatie's `permissions` + `role_has_permissions` tables exist from Phase 3          |
+| ID strategy                 | Configurable (`bigint` default, `uuid`/`ulid` optional) | One-config switch via trait                                                        |
 
 ---
 
 ## Requirements Coverage
 
-| Spec Section | Phase(s) | Status |
-|---|---|---|
-| §1 Core Architecture | 1, 3 | 100% |
-| §2.1 Auth (login, 2FA, magic link, session UI, login history) | 2, 12 | 100% |
-| §2.2 Sanctum (bearer, me, PATs, token UI) | 2, 12 | 100% |
-| §2.2.1 Token storage, refresh, device sessions, reuse detection | 2, 11 | 100% |
-| §2.3 Security defaults | 1, 2, 5 | 100% |
-| §2.3.1 XSS mitigation | 1, 7, 14 | 100% |
-| §3.1 Tenant context + security | 3 | 100% |
-| §3.2 Invitations + edge cases | 5, 12 | 100% |
-| §3.3 Tenant lifecycle | 3, 8 | 100% |
-| §3.4 User account lifecycle | 5 | 100% |
-| §4 Authorization + RBAC extension | 4, 11 | 100% |
-| §5.2 List views (saved views) | 10, 11 | 100% |
-| §5.3 Forms (autosave) | 11 | 100% |
-| §6 Frontend architecture | 11, 12 | 100% |
-| §7 Realtime (Reverb) | 13 | 100% |
-| §8 Notifications, activity log, deliverability | 6, 13 | 100% |
-| §9 Background jobs, ops, backups, DR | 7, 10, 14 | 100% |
-| §10 Admin section | 8, 12 | 100% |
-| §11 Impersonation | 8, 12 | 100% |
-| §12 Billing (stub) | 9, 12 | 100% |
-| §13 Testing strategy (rate limiting, helpers) | 1, 9 | 100% |
-| §14 DX & CI | 1, 14 | 100% |
-| §14A/B Folder structure & generator | 1, 10 | 100% |
-| §15 Baseline modules | 7, 10 | 100% |
-| Appendix A (all tables) | 2, 3, 5, 6, 7, 8, 9 | 100% |
-| Appendix B (query conventions) | 10 | 100% |
-| Appendix C (UI patterns) | 11, 12 | 100% |
+| Spec Section                                                    | Phase(s)            | Status |
+| --------------------------------------------------------------- | ------------------- | ------ |
+| §1 Core Architecture                                            | 1, 3                | 100%   |
+| §2.1 Auth (login, 2FA, magic link, session UI, login history)   | 2, 12               | 100%   |
+| §2.2 Sanctum (bearer, me, PATs, token UI)                       | 2, 12               | 100%   |
+| §2.2.1 Token storage, refresh, device sessions, reuse detection | 2, 11               | 100%   |
+| §2.3 Security defaults                                          | 1, 2, 5             | 100%   |
+| §2.3.1 XSS mitigation                                           | 1, 7, 14            | 100%   |
+| §3.1 Tenant context + security                                  | 3                   | 100%   |
+| §3.2 Invitations + edge cases                                   | 5, 12               | 100%   |
+| §3.3 Tenant lifecycle                                           | 3, 8                | 100%   |
+| §3.4 User account lifecycle                                     | 5                   | 100%   |
+| §4 Authorization + RBAC extension                               | 4, 11               | 100%   |
+| §5.2 List views (saved views)                                   | 10, 11              | 100%   |
+| §5.3 Forms (autosave)                                           | 11                  | 100%   |
+| §6 Frontend architecture                                        | 11, 12              | 100%   |
+| §7 Realtime (Reverb)                                            | 13                  | 100%   |
+| §8 Notifications, activity log, deliverability                  | 6, 13               | 100%   |
+| §9 Background jobs, ops, backups, DR                            | 7, 10, 14           | 100%   |
+| §10 Admin section                                               | 8, 12               | 100%   |
+| §11 Impersonation                                               | 8, 12               | 100%   |
+| §12 Billing (stub)                                              | 9, 12               | 100%   |
+| §13 Testing strategy (rate limiting, helpers)                   | 1, 9                | 100%   |
+| §14 DX & CI                                                     | 1, 14               | 100%   |
+| §14A/B Folder structure & generator                             | 1, 10               | 100%   |
+| §15 Baseline modules                                            | 7, 10               | 100%   |
+| Appendix A (all tables)                                         | 2, 3, 5, 6, 7, 8, 9 | 100%   |
+| Appendix B (query conventions)                                  | 10                  | 100%   |
+| Appendix C (UI patterns)                                        | 11, 12              | 100%   |
 
 **Total: 347/347 requirements covered. 0 missing.**
 **Estimated tests: ~370+**

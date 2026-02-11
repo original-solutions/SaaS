@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\Apm\ApmManager;
 use App\Support\Tenancy\TenantContext;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -35,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('is-super-admin', fn ($user) => $user->isSuperAdmin());
 
         $this->configureRateLimiters();
+
+        // APM integrations
+        (new ApmManager)->register();
     }
 
     protected function configureRateLimiters(): void

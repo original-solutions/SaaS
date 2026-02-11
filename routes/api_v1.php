@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BillingController;
+use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\DeviceSessionController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\FileController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonalAccessTokenController;
+use App\Http\Controllers\Api\V1\SavedViewController;
 use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TenantController;
@@ -147,5 +149,17 @@ Route::middleware('auth:sanctum')->group(function (): void {
             Route::post('/', [ImportController::class, 'store']);
             Route::get('/{import}', [ImportController::class, 'show']);
         });
+
+        // Saved views
+        Route::prefix('saved-views')->group(function (): void {
+            Route::get('/', [SavedViewController::class, 'index']);
+            Route::post('/', [SavedViewController::class, 'store']);
+            Route::put('/{savedView}', [SavedViewController::class, 'update']);
+            Route::delete('/{savedView}', [SavedViewController::class, 'destroy']);
+            Route::post('/{savedView}/default', [SavedViewController::class, 'setDefault']);
+        });
+
+        // Customers
+        Route::apiResource('customers', CustomerController::class);
     });
 });

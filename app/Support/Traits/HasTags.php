@@ -10,7 +10,6 @@ trait HasTags
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable')
-            ->withPivot('tenant_id')
-            ->withTimestamps();
+            ->withPivot('tenant_id');
     }
 }
