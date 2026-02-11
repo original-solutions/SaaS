@@ -1,0 +1,18 @@
+{
+    "name": "yardpilot-help",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vitepress dev",
+        "build": "vitepress build",
+        "preview": "vitepress preview",
+        "screenshots": "node scripts/screenshots/generate.mjs",
+        "screenshots:dark": "node scripts/screenshots/generate.mjs --dark",
+        "screenshots:both": "node scripts/screenshots/generate.mjs --both"
+    },
+    "devDependencies": {
+        "playwright": "^1.48.0",
+        "vitepress": "^1.5.0"
+    }
+}

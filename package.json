@@ -15,7 +15,10 @@
         "lint:check": "eslint resources/js",
         "typecheck": "vue-tsc --noEmit --incremental",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "docs:dev": "npm -C docs/vitepress run dev",
+        "docs:build": "npm -C docs/vitepress run build",
+        "docs:preview": "npm -C docs/vitepress run preview"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.2",
@@ -36,6 +39,7 @@
         "typescript": "^5.9.3",
         "vee-validate": "^4.15.1",
         "vite": "^7.0.7",
+        "vitepress": "^1.6.4",
         "vue-tsc": "^3.2.4",
         "zod": "^3.25.76"
     },

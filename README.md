@@ -13,12 +13,12 @@ This project is a modern SaaS (Software as a Service) starter kit built with Lar
 - Modern UI with Vite, Pinia, and Tailwind CSS
 - Pest-powered test suite and CI workflow
 
-
 ---
 
 ## Usage Guide
 
 ### 1. Requirements
+
 - PHP 8.4+
 - Composer
 - Node.js (v18+ recommended)
@@ -26,6 +26,7 @@ This project is a modern SaaS (Software as a Service) starter kit built with Lar
 - SQLite/MySQL/Postgres (for database)
 
 ### 2. Installation
+
 Clone the repository and install dependencies:
 
 ```bash
@@ -36,15 +37,18 @@ npm install
 ```
 
 ### 3. Environment Setup
+
 Copy the example environment file and set your configuration:
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
+
 Edit `.env` for your database and mail settings as needed.
 
 ### 4. Database & Seeders
+
 Run migrations and seeders:
 
 ```bash
@@ -52,6 +56,7 @@ php artisan migrate --seed
 ```
 
 ### 5. Running the App
+
 Start the development servers:
 
 ```bash
