@@ -1,29 +1,36 @@
 <template>
-    <div>
-        <div class="flex items-center gap-4 mb-6">
-            <router-link
-                :to="`/customers/${route.params.id}`"
-                class="text-sm text-gray-500 hover:text-gray-700"
-            >
-                &larr; Back
-            </router-link>
-            <h1 class="text-2xl font-bold text-gray-900">Edit Customer</h1>
-        </div>
-
-        <div v-if="isLoadingCustomer" class="text-sm text-gray-500">Loading...</div>
-
-        <div
-            v-else-if="customer"
-            class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-lg"
-        >
-            <CustomerForm
-                :initial="customer"
-                :loading="isSaving"
-                :errors="errors"
-                @submit="handleUpdate"
-            />
-        </div>
+  <div>
+    <div class="flex items-center gap-4 mb-6">
+      <router-link
+        :to="`/customers/${route.params.id}`"
+        class="text-sm text-gray-500 hover:text-gray-700"
+      >
+        &larr; Back
+      </router-link>
+      <h1 class="text-2xl font-bold text-gray-900">
+        Edit Customer
+      </h1>
     </div>
+
+    <div
+      v-if="isLoadingCustomer"
+      class="text-sm text-gray-500"
+    >
+      Loading...
+    </div>
+
+    <div
+      v-else-if="customer"
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-lg"
+    >
+      <CustomerForm
+        :initial="customer"
+        :loading="isSaving"
+        :errors="errors"
+        @submit="handleUpdate"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -113,8 +113,8 @@ export const twoFactorApi = {
         return api.post<ApiResponse<{ recovery_codes: string[] }>>('/2fa/confirm', { code });
     },
 
-    disable(code: string) {
-        return api.delete('/2fa', { data: { code } });
+    disable(password: string) {
+        return api.delete('/2fa', { data: { password } });
     },
 
     recoveryCodes() {

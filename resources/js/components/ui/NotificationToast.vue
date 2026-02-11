@@ -1,24 +1,24 @@
 <template>
-    <div class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm">
-        <TransitionGroup name="toast">
-            <div
-                v-for="notification in store.notifications"
-                :key="notification.id"
-                :class="[
-                    'px-4 py-3 rounded-lg shadow-lg text-sm flex items-center justify-between gap-3',
-                    typeClasses[notification.type],
-                ]"
-            >
-                <span>{{ notification.message }}</span>
-                <button
-                    class="opacity-60 hover:opacity-100 shrink-0"
-                    @click="store.remove(notification.id)"
-                >
-                    <X class="h-4 w-4" />
-                </button>
-            </div>
-        </TransitionGroup>
-    </div>
+  <div class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm">
+    <TransitionGroup name="toast">
+      <div
+        v-for="notification in store.notifications"
+        :key="notification.id"
+        :class="[
+          'px-4 py-3 rounded-lg shadow-lg text-sm flex items-center justify-between gap-3',
+          typeClasses[notification.type],
+        ]"
+      >
+        <span>{{ notification.message }}</span>
+        <button
+          class="opacity-60 hover:opacity-100 shrink-0"
+          @click="store.remove(notification.id)"
+        >
+          <X class="h-4 w-4" />
+        </button>
+      </div>
+    </TransitionGroup>
+  </div>
 </template>
 
 <script setup lang="ts">

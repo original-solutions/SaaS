@@ -1,88 +1,96 @@
 <template>
-    <div>
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Notifications</h1>
-            <BaseButton
-                v-if="notifications.length > 0"
-                variant="ghost"
-                size="sm"
-                :loading="markingAll"
-                @click="markAllRead"
-            >
-                Mark all read
-            </BaseButton>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <div v-if="isLoading" class="p-6 text-center text-sm text-gray-500">Loading...</div>
-            <div
-                v-else-if="notifications.length === 0"
-                class="p-6 text-center text-sm text-gray-500"
-            >
-                No notifications.
-            </div>
-
-            <ul v-else class="divide-y divide-gray-200">
-                <li
-                    v-for="notification in notifications"
-                    :key="notification.id"
-                    :class="[
-                        'p-4 flex items-start gap-3',
-                        !notification.read_at ? 'bg-blue-50/50' : '',
-                    ]"
-                >
-                    <div class="flex-shrink-0 mt-1">
-                        <div
-                            :class="[
-                                'h-2 w-2 rounded-full',
-                                !notification.read_at ? 'bg-blue-500' : 'bg-transparent',
-                            ]"
-                        />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm text-gray-800">
-                            {{ notificationMessage(notification) }}
-                        </p>
-                        <p class="text-xs text-gray-400 mt-1">
-                            {{ formatRelative(notification.created_at) }}
-                        </p>
-                    </div>
-                    <button
-                        v-if="!notification.read_at"
-                        class="flex-shrink-0 text-xs text-gray-500 hover:text-gray-700"
-                        @click="markRead(notification.id)"
-                    >
-                        Mark read
-                    </button>
-                </li>
-            </ul>
-
-            <div
-                v-if="pagination.lastPage > 1"
-                class="px-4 py-3 border-t border-gray-200 flex items-center justify-between"
-            >
-                <span class="text-xs text-gray-500"
-                    >Page {{ pagination.currentPage }} of {{ pagination.lastPage }}</span
-                >
-                <div class="flex gap-2">
-                    <button
-                        :disabled="pagination.currentPage <= 1"
-                        class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
-                        @click="loadNotifications(pagination.currentPage - 1)"
-                    >
-                        Previous
-                    </button>
-                    <button
-                        :disabled="pagination.currentPage >= pagination.lastPage"
-                        class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
-                        @click="loadNotifications(pagination.currentPage + 1)"
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-        </div>
+  <div>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">
+        Notifications
+      </h1>
+      <BaseButton
+        v-if="notifications.length > 0"
+        variant="ghost"
+        size="sm"
+        :loading="markingAll"
+        @click="markAllRead"
+      >
+        Mark all read
+      </BaseButton>
     </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div
+        v-if="isLoading"
+        class="p-6 text-center text-sm text-gray-500"
+      >
+        Loading...
+      </div>
+      <div
+        v-else-if="notifications.length === 0"
+        class="p-6 text-center text-sm text-gray-500"
+      >
+        No notifications.
+      </div>
+
+      <ul
+        v-else
+        class="divide-y divide-gray-200"
+      >
+        <li
+          v-for="notification in notifications"
+          :key="notification.id"
+          :class="[
+            'p-4 flex items-start gap-3',
+            !notification.read_at ? 'bg-blue-50/50' : '',
+          ]"
+        >
+          <div class="flex-shrink-0 mt-1">
+            <div
+              :class="[
+                'h-2 w-2 rounded-full',
+                !notification.read_at ? 'bg-blue-500' : 'bg-transparent',
+              ]"
+            />
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm text-gray-800">
+              {{ notificationMessage(notification) }}
+            </p>
+            <p class="text-xs text-gray-400 mt-1">
+              {{ formatRelative(notification.created_at) }}
+            </p>
+          </div>
+          <button
+            v-if="!notification.read_at"
+            class="flex-shrink-0 text-xs text-gray-500 hover:text-gray-700"
+            @click="markRead(notification.id)"
+          >
+            Mark read
+          </button>
+        </li>
+      </ul>
+
+      <div
+        v-if="pagination.lastPage > 1"
+        class="px-4 py-3 border-t border-gray-200 flex items-center justify-between"
+      >
+        <span class="text-xs text-gray-500">Page {{ pagination.currentPage }} of {{ pagination.lastPage }}</span>
+        <div class="flex gap-2">
+          <button
+            :disabled="pagination.currentPage <= 1"
+            class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+            @click="loadNotifications(pagination.currentPage - 1)"
+          >
+            Previous
+          </button>
+          <button
+            :disabled="pagination.currentPage >= pagination.lastPage"
+            class="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+            @click="loadNotifications(pagination.currentPage + 1)"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

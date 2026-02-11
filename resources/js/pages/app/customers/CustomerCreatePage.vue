@@ -1,16 +1,25 @@
 <template>
-    <div>
-        <div class="flex items-center gap-4 mb-6">
-            <router-link to="/customers" class="text-sm text-gray-500 hover:text-gray-700">
-                &larr; Back
-            </router-link>
-            <h1 class="text-2xl font-bold text-gray-900">New Customer</h1>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-lg">
-            <CustomerForm :loading="isLoading" :errors="errors" @submit="handleCreate" />
-        </div>
+  <div>
+    <div class="flex items-center gap-4 mb-6">
+      <router-link
+        to="/customers"
+        class="text-sm text-gray-500 hover:text-gray-700"
+      >
+        &larr; Back
+      </router-link>
+      <h1 class="text-2xl font-bold text-gray-900">
+        New Customer
+      </h1>
     </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-lg">
+      <CustomerForm
+        :loading="isLoading"
+        :errors="errors"
+        @submit="handleCreate"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
